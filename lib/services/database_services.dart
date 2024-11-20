@@ -1,4 +1,4 @@
-import 'package:baseballanotation/models/task.dart';
+import 'package:baseballanotation/models/player.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -7,10 +7,27 @@ class DatabaseServices {
 
   static Database? _database;
 
-  final String tableName = 'notes';
+  final String tableName = 'players';
   final String columnId = 'id';
-  final String columnTitle = 'title';
-  final String columnContent = 'content';
+  final String columnName = 'name';
+  final String columnIsPitcher = 'is_pitcher';
+  final String columnHits = 'hits';
+  final String columnAtBats = 'at_bats';
+  final String columnAverage = 'average';
+  final String columnHomeRuns = 'home_runs';
+  final String columnRbi = 'rbi';
+  final String columnRuns = 'runs';
+  final String columnStolenBases = 'stolen_bases';
+  final String columnObp = 'obp';
+  final String columnSlg = 'slg';
+  final String columnWins = 'wins';
+  final String columnLosses = 'losses';
+  final String columnEra = 'era';
+  final String columnStrikeouts = 'strikeouts';
+  final String columnWalks = 'walks';
+  final String columnWhip = 'whip';
+  final String columnInningsPitched = 'innings_pitched';
+  final String columnSaves = 'saves';
 
   DatabaseServices._constructor();
 
@@ -21,7 +38,7 @@ class DatabaseServices {
 
   Future<Database> getDatabase() async {
     final databaseDirPath = await getDatabasesPath();
-    final databasePath = join(databaseDirPath, 'database.db');
+    final databasePath = join(databaseDirPath, 'baseball_stats.db');
     final database = await openDatabase(
       databasePath,
       version: 1,
@@ -29,8 +46,25 @@ class DatabaseServices {
         await db.execute('''
         CREATE TABLE $tableName(
           $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-          $columnTitle TEXT NOT NULL,
-          $columnContent TEXT NOT NULL
+          $columnName TEXT NOT NULL,
+          $columnIsPitcher INTEGER NOT NULL,
+          $columnHits INTEGER,
+          $columnAtBats INTEGER,
+          $columnAverage REAL,
+          $columnHomeRuns INTEGER,
+          $columnRbi INTEGER,
+          $columnRuns INTEGER,
+          $columnStolenBases INTEGER,
+          $columnObp REAL,
+          $columnSlg REAL,
+          $columnWins INTEGER,
+          $columnLosses INTEGER,
+          $columnEra REAL,
+          $columnStrikeouts INTEGER,
+          $columnWalks INTEGER,
+          $columnWhip REAL,
+          $columnInningsPitched INTEGER,
+          $columnSaves INTEGER
         )
       ''');
       },
@@ -38,47 +72,37 @@ class DatabaseServices {
     return database;
   }
 
-  void addTask(String title, String content) async {
+  Future<void> addPlayer(Player player) async {
     final db = await database;
     await db.insert(
       tableName,
-      {
-        columnTitle: title,
-        columnContent: content,
-      },
+      player.toMap(),
     );
   }
 
-  Future<List<Task>> getTasks() async {
+  Future<List<Player>> getPlayers() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(tableName);
     return List.generate(maps.length, (i) {
-      return Task(
-        id: maps[i][columnId],
-        title: maps[i][columnTitle],
-        content: maps[i][columnContent],
-      );
+      return Player.fromMap(maps[i]);
     });
   }
 
-  void deleteTask(int i) async {
-    final db = await database;
-    await db.delete(
-      tableName,
-      where: 'id = ?',
-      whereArgs: [i],
-    );
-  }
-
-  Future<void> updateTask(int id, String title, String content) async {
+  Future<void> updatePlayer(Player player) async {
     final db = await database;
     await db.update(
       tableName,
-      {
-        columnTitle: title,
-        columnContent: content,
-      },
-      where: 'id = ?',
+      player.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [player.id],
+    );
+  }
+
+  Future<void> deletePlayer(int id) async {
+    final db = await database;
+    await db.delete(
+      tableName,
+      where: '$columnId = ?',
       whereArgs: [id],
     );
   }
