@@ -1,3 +1,4 @@
+import 'package:baseballanotation/models/task.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -53,6 +54,18 @@ class DatabaseServices {
         columnContent: content,
       },
     );
+  }
+
+  Future<List<Task> > getTasks() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(tableName);
+    return List.generate(maps.length, (i) {
+      return Task(
+        id: maps[i][columnId],
+        title: maps[i][columnTitle],
+        content: maps[i][columnContent],
+      );
+    });
   }
 
 }
