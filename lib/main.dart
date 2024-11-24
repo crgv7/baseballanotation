@@ -1,3 +1,4 @@
+import 'package:baseballanotation/screen/calendario/calendar.dart';
 import 'package:baseballanotation/screen/home.dart';
 import 'package:baseballanotation/screen/lideres.dart';
 import 'package:flutter/material.dart';
@@ -15,16 +16,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       routes: {
-          '':(context)=>Home(),
-          //'calendario':(context)=>EventCalendar(),
+          'home':(context)=>Home(),
           'lideres':(context)=>Lideres(),
+          'calendario':(context)=>EventCalendar()
       },
       theme: ThemeData(
         
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'BallAnotations'),
     );
   }
 }
@@ -56,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
             _buildItem(
               icon: Icons.notifications_rounded, 
               title: "Home", 
-              ontap: ()=>Navigator.pushNamed(context,"planes")
+              ontap: ()=>Navigator.pushNamed(context,"home")
               ),
 
             _buildItem(

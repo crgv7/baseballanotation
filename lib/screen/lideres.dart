@@ -5,9 +5,14 @@ class Lideres extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("Lideres"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Lideres"),
+      ),
+      body: Container(
+        child: Center(
+          child: Text("Lideres"),
+        ),
       ),
     );
   }
