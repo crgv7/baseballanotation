@@ -88,6 +88,39 @@ class DatabaseServices {
     });
   }
 
+  //etraer player y ordenarlos de mayor a menor por hr
+  Future<List<Player>> getPlayersByHomeRuns() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnHomeRuns DESC');
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
+    Future<List<Player>> getPlayersByAtBats() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnAtBats DESC');
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
+    Future<List<Player>> getPlayersByHits() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnHits DESC');
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
+    Future<List<Player>> getPlayersByRbi() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnRbi DESC');
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
   Future<void> updatePlayer(Player player) async {
     final db = await database;
     await db.update(
