@@ -213,4 +213,95 @@ class DatabaseServices {
       whereArgs: [id],
     );
   }
+
+  Future<List<Player>> getPlayersByWins() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableName,
+      where: '$columnIsPitcher = ?',
+      whereArgs: [1],
+      orderBy: '$columnWins DESC'
+    );
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
+  Future<List<Player>> getPlayersByLosses() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableName,
+      where: '$columnIsPitcher = ?',
+      whereArgs: [1],
+      orderBy: '$columnLosses DESC'
+    );
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
+  Future<List<Player>> getPlayersByEra() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableName,
+      where: '$columnIsPitcher = ?',
+      whereArgs: [1],
+      orderBy: '$columnEra ASC'  // ERA menor es mejor
+    );
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
+  Future<List<Player>> getPlayersByStrikeouts() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableName,
+      where: '$columnIsPitcher = ?',
+      whereArgs: [1],
+      orderBy: '$columnStrikeouts DESC'
+    );
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
+  Future<List<Player>> getPlayersByWalks() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableName,
+      where: '$columnIsPitcher = ?',
+      whereArgs: [1],
+      orderBy: '$columnWalks DESC'
+    );
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
+  Future<List<Player>> getPlayersByInningsPitched() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableName,
+      where: '$columnIsPitcher = ?',
+      whereArgs: [1],
+      orderBy: '$columnInningsPitched DESC'
+    );
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
+
+  Future<List<Player>> getPlayersBySaves() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableName,
+      where: '$columnIsPitcher = ?',
+      whereArgs: [1],
+      orderBy: '$columnSaves DESC'
+    );
+    return List.generate(maps.length, (i) {
+      return Player.fromMap(maps[i]);
+    });
+  }
 }

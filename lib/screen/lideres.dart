@@ -84,11 +84,138 @@ class _LideresState extends State<Lideres> {
                                       });
                                     }
                                   }),
+                              CheckboxListTile(
+                                  value: _selectedOption == "RBI",
+                                  title: Text("RBI"),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedOption =
+                                          value! ? "RBI" : null;
+                                    });
+                                    if (value!) {
+                                      this.setState(() {
+                                        _playersFuture = DatabaseServices
+                                            .instance
+                                            .getPlayersByRbi();
+                                      });
+                                    }
+                                  }),
+                              CheckboxListTile(
+                                value: _selectedOption == "Wins",
+                                title: Text("Wins"),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedOption = value! ? "Wins" : null;
+                                  });
+                                  if (value!) {
+                                    this.setState(() {
+                                      _playersFuture = DatabaseServices
+                                          .instance
+                                          .getPlayersByWins();
+                                    });
+                                  }
+                                }
+                              ),
+                              CheckboxListTile(
+                                value: _selectedOption == "Losses",
+                                title: Text("Losses"),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedOption = value! ? "Losses" : null;
+                                  });
+                                  if (value!) {
+                                    this.setState(() {
+                                      _playersFuture = DatabaseServices
+                                          .instance
+                                          .getPlayersByLosses();
+                                    });
+                                  }
+                                }
+                              ),
+                              CheckboxListTile(
+                                value: _selectedOption == "ERA",
+                                title: Text("ERA"),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedOption = value! ? "ERA" : null;
+                                  });
+                                  if (value!) {
+                                    this.setState(() {
+                                      _playersFuture = DatabaseServices
+                                          .instance
+                                          .getPlayersByEra();
+                                    });
+                                  }
+                                }
+                              ),
+                              CheckboxListTile(
+                                value: _selectedOption == "Strikeouts",
+                                title: Text("Strikeouts"),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedOption = value! ? "Strikeouts" : null;
+                                  });
+                                  if (value!) {
+                                    this.setState(() {
+                                      _playersFuture = DatabaseServices
+                                          .instance
+                                          .getPlayersByStrikeouts();
+                                    });
+                                  }
+                                }
+                              ),
+                              CheckboxListTile(
+                                value: _selectedOption == "Walks",
+                                title: Text("Walks"),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedOption = value! ? "Walks" : null;
+                                  });
+                                  if (value!) {
+                                    this.setState(() {
+                                      _playersFuture = DatabaseServices
+                                          .instance
+                                          .getPlayersByWalks();
+                                    });
+                                  }
+                                }
+                              ),
+                              CheckboxListTile(
+                                value: _selectedOption == "InningsPitched",
+                                title: Text("Innings Pitched"),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedOption = value! ? "InningsPitched" : null;
+                                  });
+                                  if (value!) {
+                                    this.setState(() {
+                                      _playersFuture = DatabaseServices
+                                          .instance
+                                          .getPlayersByInningsPitched();
+                                    });
+                                  }
+                                }
+                              ),
+                              CheckboxListTile(
+                                value: _selectedOption == "Saves",
+                                title: Text("Saves"),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedOption = value! ? "Saves" : null;
+                                  });
+                                  if (value!) {
+                                    this.setState(() {
+                                      _playersFuture = DatabaseServices
+                                          .instance
+                                          .getPlayersBySaves();
+                                    });
+                                  }
+                                }
+                              ),
                             ],
                           ),
                         ),
                         actions: [
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1866748274.
                           TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
@@ -125,7 +252,15 @@ class _LideresState extends State<Lideres> {
                 subtitle: Text(
                   _selectedOption == "Home Runs" ? "HR: ${player.homeRuns}" :
                   _selectedOption == "Hits" ? "H: ${player.hits}" :
-                  _selectedOption == "At Bats" ? "AB: ${player.atBats}" : ""
+                  _selectedOption == "At Bats" ? "AB: ${player.atBats}" :
+                  _selectedOption == "RBI" ? "RBI: ${player.rbi}" :
+                  _selectedOption == "Wins" ? "W: ${player.wins}" :
+                  _selectedOption == "Losses" ? "L: ${player.losses}" :
+                  _selectedOption == "ERA" ? "ERA: ${player.era}" :
+                  _selectedOption == "Strikeouts" ? "K: ${player.strikeouts}" :
+                  _selectedOption == "Walks" ? "BB: ${player.walks}" :
+                  _selectedOption == "InningsPitched" ? "IP: ${player.inningsPitched}" :
+                  _selectedOption == "Saves" ? "SV: ${player.saves}" : ""
                 ),
               );
             },
