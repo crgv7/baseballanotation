@@ -4,7 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
+import 'package:baseballanotation/models/event.dart';
+import 'package:baseballanotation/services/database_services.dart';
 
 part 'color-picker.dart';
 
@@ -20,11 +21,57 @@ class EventCalendar extends StatefulWidget {
   EventCalendarState createState() => EventCalendarState();
 }
 
-List<Color> _colorCollection = <Color>[];
-List<String> _colorNames = <String>[];
+List<Color> _colorCollection = <Color>[
+  Colors.blue,
+  Colors.green,
+  Colors.red,
+  Colors.purple,
+  Colors.orange,
+  Colors.teal,
+  Colors.pink,
+  Colors.cyan,
+  Colors.brown,
+  Colors.indigo,
+];
+
+List<String> _colorNames = <String>[
+  'Blue',
+  'Green',
+  'Red',
+  'Purple',
+  'Orange',
+  'Teal',
+  'Pink',
+  'Cyan',
+  'Brown',
+  'Indigo',
+];
+
 int _selectedColorIndex = 0;
 int _selectedTimeZoneIndex = 0;
-List<String> _timeZoneCollection = <String>[];
+List<String> _timeZoneCollection = <String>[
+  'Default Time',
+  'AUS Central Standard Time',
+  'AUS Eastern Standard Time',
+  'Afghanistan Standard Time',
+  'America Standard Time',
+  'Arab Standard Time',
+  'Arabian Standard Time',
+];
+
+List<String> eventNameCollection = <String>[
+  'Conference',
+  'Consulting',
+  'Business',
+  'Meeting',
+  'Training',
+  'Scrum',
+  'Project Review',
+  'Client Meeting',
+  'Status Update',
+  'Testing',
+];
+
 late DataSource _events;
 Meeting? _selectedAppointment;
 late DateTime _startDate;
@@ -37,20 +84,62 @@ String _notes = '';
 
 class EventCalendarState extends State<EventCalendar> {
   EventCalendarState();
-  late List<String> eventNameCollection;
-  late List<Meeting> appointments;
   CalendarController calendarController = CalendarController();
+  final DatabaseServices databaseServices = DatabaseServices.instance;
+  List<Meeting> appointments = [];
 
   @override
   void initState() {
-    appointments = getMeetingDetails();
+    super.initState();
     _events = DataSource(appointments);
+    _loadEvents();
     _selectedAppointment = null;
     _selectedColorIndex = 0;
     _selectedTimeZoneIndex = 0;
     _subject = '';
     _notes = '';
-    super.initState();
+  }
+
+  Future<void> _loadEvents() async {
+    final events = await databaseServices.getEvents();
+    setState(() {
+      appointments = events.map((event) => Meeting(
+        eventName: event.eventName,
+        from: event.from,
+        to: event.to,
+        background: _colorCollection[event.colorIndex],
+        isAllDay: event.isAllDay,
+        id: event.id,
+        notes: event.notes ?? '',
+      )).toList();
+      _events = DataSource(appointments);
+    });
+  }
+
+  Future<void> _saveEvent(Meeting meeting) async {
+    final event = Event(
+      id: meeting.id,
+      eventName: meeting.eventName,
+      from: meeting.from,
+      to: meeting.to,
+      notes: meeting.notes,
+      isAllDay: meeting.isAllDay,
+      colorIndex: _colorCollection.indexOf(meeting.background),
+    );
+
+    if (event.id == null) {
+      await databaseServices.addEvent(event);
+    } else {
+      await databaseServices.updateEvent(event);
+    }
+    _loadEvents();
+  }
+
+  Future<void> _deleteEvent(Meeting meeting) async {
+    if (meeting.id != null) {
+      await databaseServices.deleteEvent(meeting.id!);
+      _loadEvents();
+    }
   }
 
   @override
@@ -120,7 +209,7 @@ class EventCalendarState extends State<EventCalendar> {
           _subject = meetingDetails.eventName == '(No title)'
               ? ''
               : meetingDetails.eventName;
-          _notes = meetingDetails.description;
+          _notes = meetingDetails.notes;
           _selectedAppointment = meetingDetails;
         } else {
           final DateTime date = calendarTapDetails.date!;
@@ -137,174 +226,6 @@ class EventCalendarState extends State<EventCalendar> {
         );
       }
     });
-  }
-
-  List<Meeting> getMeetingDetails() {
-    final List<Meeting> meetingCollection = <Meeting>[];
-    eventNameCollection = <String>[];
-    eventNameCollection.add('General Meeting');
-    eventNameCollection.add('Plan Execution');
-    eventNameCollection.add('Project Plan');
-    eventNameCollection.add('Consulting');
-    eventNameCollection.add('Support');
-    eventNameCollection.add('Development Meeting');
-    eventNameCollection.add('Scrum');
-    eventNameCollection.add('Project Completion');
-    eventNameCollection.add('Release updates');
-    eventNameCollection.add('Performance Check');
-
-    _colorCollection = <Color>[];
-    _colorCollection.add(const Color(0xFF0F8644));
-    _colorCollection.add(const Color(0xFF8B1FA9));
-    _colorCollection.add(const Color(0xFFD20100));
-    _colorCollection.add(const Color(0xFFFC571D));
-    _colorCollection.add(const Color(0xFF85461E));
-    _colorCollection.add(const Color(0xFFFF00FF));
-    _colorCollection.add(const Color(0xFF3D4FB5));
-    _colorCollection.add(const Color(0xFFE47C73));
-    _colorCollection.add(const Color(0xFF636363));
-
-    _colorNames = <String>[];
-    _colorNames.add('Green');
-    _colorNames.add('Purple');
-    _colorNames.add('Red');
-    _colorNames.add('Orange');
-    _colorNames.add('Caramel');
-    _colorNames.add('Magenta');
-    _colorNames.add('Blue');
-    _colorNames.add('Peach');
-    _colorNames.add('Gray');
-
-    _timeZoneCollection = <String>[];
-    _timeZoneCollection.add('Default Time');
-    _timeZoneCollection.add('AUS Central Standard Time');
-    _timeZoneCollection.add('AUS Eastern Standard Time');
-    _timeZoneCollection.add('Afghanistan Standard Time');
-    _timeZoneCollection.add('Alaskan Standard Time');
-    _timeZoneCollection.add('Arab Standard Time');
-    _timeZoneCollection.add('Arabian Standard Time');
-    _timeZoneCollection.add('Arabic Standard Time');
-    _timeZoneCollection.add('Argentina Standard Time');
-    _timeZoneCollection.add('Atlantic Standard Time');
-    _timeZoneCollection.add('Azerbaijan Standard Time');
-    _timeZoneCollection.add('Azores Standard Time');
-    _timeZoneCollection.add('Bahia Standard Time');
-    _timeZoneCollection.add('Bangladesh Standard Time');
-    _timeZoneCollection.add('Belarus Standard Time');
-    _timeZoneCollection.add('Canada Central Standard Time');
-    _timeZoneCollection.add('Cape Verde Standard Time');
-    _timeZoneCollection.add('Caucasus Standard Time');
-    _timeZoneCollection.add('Cen. Australia Standard Time');
-    _timeZoneCollection.add('Central America Standard Time');
-    _timeZoneCollection.add('Central Asia Standard Time');
-    _timeZoneCollection.add('Central Brazilian Standard Time');
-    _timeZoneCollection.add('Central Europe Standard Time');
-    _timeZoneCollection.add('Central European Standard Time');
-    _timeZoneCollection.add('Central Pacific Standard Time');
-    _timeZoneCollection.add('Central Standard Time');
-    _timeZoneCollection.add('China Standard Time');
-    _timeZoneCollection.add('Dateline Standard Time');
-    _timeZoneCollection.add('E. Africa Standard Time');
-    _timeZoneCollection.add('E. Australia Standard Time');
-    _timeZoneCollection.add('E. South America Standard Time');
-    _timeZoneCollection.add('Eastern Standard Time');
-    _timeZoneCollection.add('Egypt Standard Time');
-    _timeZoneCollection.add('Ekaterinburg Standard Time');
-    _timeZoneCollection.add('FLE Standard Time');
-    _timeZoneCollection.add('Fiji Standard Time');
-    _timeZoneCollection.add('GMT Standard Time');
-    _timeZoneCollection.add('GTB Standard Time');
-    _timeZoneCollection.add('Georgian Standard Time');
-    _timeZoneCollection.add('Greenland Standard Time');
-    _timeZoneCollection.add('Greenwich Standard Time');
-    _timeZoneCollection.add('Hawaiian Standard Time');
-    _timeZoneCollection.add('India Standard Time');
-    _timeZoneCollection.add('Iran Standard Time');
-    _timeZoneCollection.add('Israel Standard Time');
-    _timeZoneCollection.add('Jordan Standard Time');
-    _timeZoneCollection.add('Kaliningrad Standard Time');
-    _timeZoneCollection.add('Korea Standard Time');
-    _timeZoneCollection.add('Libya Standard Time');
-    _timeZoneCollection.add('Line Islands Standard Time');
-    _timeZoneCollection.add('Magadan Standard Time');
-    _timeZoneCollection.add('Mauritius Standard Time');
-    _timeZoneCollection.add('Middle East Standard Time');
-    _timeZoneCollection.add('Montevideo Standard Time');
-    _timeZoneCollection.add('Morocco Standard Time');
-    _timeZoneCollection.add('Mountain Standard Time');
-    _timeZoneCollection.add('Mountain Standard Time (Mexico)');
-    _timeZoneCollection.add('Myanmar Standard Time');
-    _timeZoneCollection.add('N. Central Asia Standard Time');
-    _timeZoneCollection.add('Namibia Standard Time');
-    _timeZoneCollection.add('Nepal Standard Time');
-    _timeZoneCollection.add('New Zealand Standard Time');
-    _timeZoneCollection.add('Newfoundland Standard Time');
-    _timeZoneCollection.add('North Asia East Standard Time');
-    _timeZoneCollection.add('North Asia Standard Time');
-    _timeZoneCollection.add('Pacific SA Standard Time');
-    _timeZoneCollection.add('Pacific Standard Time');
-    _timeZoneCollection.add('Pacific Standard Time (Mexico)');
-    _timeZoneCollection.add('Pakistan Standard Time');
-    _timeZoneCollection.add('Paraguay Standard Time');
-    _timeZoneCollection.add('Romance Standard Time');
-    _timeZoneCollection.add('Russia Time Zone 10');
-    _timeZoneCollection.add('Russia Time Zone 11');
-    _timeZoneCollection.add('Russia Time Zone 3');
-    _timeZoneCollection.add('Russian Standard Time');
-    _timeZoneCollection.add('SA Eastern Standard Time');
-    _timeZoneCollection.add('SA Pacific Standard Time');
-    _timeZoneCollection.add('SA Western Standard Time');
-    _timeZoneCollection.add('SE Asia Standard Time');
-    _timeZoneCollection.add('Samoa Standard Time');
-    _timeZoneCollection.add('Singapore Standard Time');
-    _timeZoneCollection.add('South Africa Standard Time');
-    _timeZoneCollection.add('Sri Lanka Standard Time');
-    _timeZoneCollection.add('Syria Standard Time');
-    _timeZoneCollection.add('Taipei Standard Time');
-    _timeZoneCollection.add('Tasmania Standard Time');
-    _timeZoneCollection.add('Tokyo Standard Time');
-    _timeZoneCollection.add('Tonga Standard Time');
-    _timeZoneCollection.add('Turkey Standard Time');
-    _timeZoneCollection.add('US Eastern Standard Time');
-    _timeZoneCollection.add('US Mountain Standard Time');
-    _timeZoneCollection.add('UTC');
-    _timeZoneCollection.add('UTC+12');
-    _timeZoneCollection.add('UTC-02');
-    _timeZoneCollection.add('UTC-11');
-    _timeZoneCollection.add('Ulaanbaatar Standard Time');
-    _timeZoneCollection.add('Venezuela Standard Time');
-    _timeZoneCollection.add('Vladivostok Standard Time');
-    _timeZoneCollection.add('W. Australia Standard Time');
-    _timeZoneCollection.add('W. Central Africa Standard Time');
-    _timeZoneCollection.add('W. Europe Standard Time');
-    _timeZoneCollection.add('West Asia Standard Time');
-    _timeZoneCollection.add('West Pacific Standard Time');
-    _timeZoneCollection.add('Yakutsk Standard Time');
-
-    final DateTime today = DateTime.now();
-    final Random random = Random();
-    for (int month = -1; month < 2; month++) {
-      for (int day = -5; day < 5; day++) {
-        for (int hour = 9; hour < 18; hour += 5) {
-          meetingCollection.add(Meeting(
-            from: today
-                .add(Duration(days: (month * 30) + day))
-                .add(Duration(hours: hour)),
-            to: today
-                .add(Duration(days: (month * 30) + day))
-                .add(Duration(hours: hour + 2)),
-            background: _colorCollection[random.nextInt(9)],
-            startTimeZone: '',
-            endTimeZone: '',
-            description: '',
-            isAllDay: false,
-            eventName: eventNameCollection[random.nextInt(7)],
-          ));
-        }
-      }
-    }
-
-    return meetingCollection;
   }
 }
 
@@ -323,7 +244,7 @@ class DataSource extends CalendarDataSource {
   String getStartTimeZone(int index) => appointments![index].startTimeZone;
 
   @override
-  String getNotes(int index) => appointments![index].description;
+  String getNotes(int index) => appointments![index].notes;
 
   @override
   String getEndTimeZone(int index) => appointments![index].endTimeZone;
@@ -347,8 +268,9 @@ class Meeting {
       this.eventName = '',
       this.startTimeZone = '',
       this.endTimeZone = '',
-      this.description = ''});
-  
+      this.notes = '',
+      this.id});
+
   final String eventName;
   final DateTime from;
   final DateTime to;
@@ -356,5 +278,6 @@ class Meeting {
   final bool isAllDay;
   final String startTimeZone;
   final String endTimeZone;
-  final String description;
+  final String notes;
+  final int? id;
 }

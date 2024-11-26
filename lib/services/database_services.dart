@@ -1,4 +1,5 @@
 import 'package:baseballanotation/models/player.dart';
+import 'package:baseballanotation/models/event.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -8,6 +9,7 @@ class DatabaseServices {
   static Database? _database;
 
   final String tableName = 'players';
+  final String eventsTableName = 'events';
   final String columnId = 'id';
   final String columnName = 'name';
   final String columnIsPitcher = 'is_pitcher';
@@ -36,13 +38,21 @@ class DatabaseServices {
     return _database!;
   }
 
+  Future<void> deleteDatabase() async {
+    final databaseDirPath = await getDatabasesPath();
+    final databasePath = join(databaseDirPath, 'baseball_stats.db');
+    await databaseFactory.deleteDatabase(databasePath);
+    _database = null;
+  }
+
   Future<Database> getDatabase() async {
     final databaseDirPath = await getDatabasesPath();
     final databasePath = join(databaseDirPath, 'baseball_stats.db');
     final database = await openDatabase(
       databasePath,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
+        // Crear tabla de jugadores
         await db.execute('''
         CREATE TABLE $tableName(
           $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -66,7 +76,37 @@ class DatabaseServices {
           $columnInningsPitched INTEGER,
           $columnSaves INTEGER
         )
-      ''');
+        ''');
+
+        // Crear tabla de eventos
+        await db.execute('''
+        CREATE TABLE $eventsTableName(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          eventName TEXT NOT NULL,
+          'from' TEXT NOT NULL,
+          'to' TEXT NOT NULL,
+          notes TEXT,
+          isAllDay INTEGER NOT NULL,
+          colorIndex INTEGER NOT NULL
+        )
+        ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion == 1) {
+          // Si la versión es 1, solo necesitamos agregar la tabla de eventos
+          print('Upgrading database from version $oldVersion to $newVersion');
+          await db.execute('''
+          CREATE TABLE IF NOT EXISTS $eventsTableName(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            eventName TEXT NOT NULL,
+            'from' TEXT NOT NULL,
+            'to' TEXT NOT NULL,
+            notes TEXT,
+            isAllDay INTEGER NOT NULL,
+            colorIndex INTEGER NOT NULL
+          )
+          ''');
+        }
       },
     );
     return database;
@@ -88,7 +128,6 @@ class DatabaseServices {
     });
   }
 
-  //etraer player y ordenarlos de mayor a menor por hr
   Future<List<Player>> getPlayersByHomeRuns() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnHomeRuns DESC');
@@ -97,7 +136,7 @@ class DatabaseServices {
     });
   }
 
-    Future<List<Player>> getPlayersByAtBats() async {
+  Future<List<Player>> getPlayersByAtBats() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnAtBats DESC');
     return List.generate(maps.length, (i) {
@@ -105,7 +144,7 @@ class DatabaseServices {
     });
   }
 
-    Future<List<Player>> getPlayersByHits() async {
+  Future<List<Player>> getPlayersByHits() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnHits DESC');
     return List.generate(maps.length, (i) {
@@ -113,7 +152,7 @@ class DatabaseServices {
     });
   }
 
-    Future<List<Player>> getPlayersByRbi() async {
+  Future<List<Player>> getPlayersByRbi() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnRbi DESC');
     return List.generate(maps.length, (i) {
@@ -136,6 +175,41 @@ class DatabaseServices {
     await db.delete(
       tableName,
       where: '$columnId = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> addEvent(Event event) async {
+    final db = await database;
+    await db.insert(
+      eventsTableName,
+      event.toMap(),
+    );
+  }
+
+  Future<List<Event>> getEvents() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(eventsTableName);
+    return List.generate(maps.length, (i) {
+      return Event.fromMap(maps[i]);
+    });
+  }
+
+  Future<void> updateEvent(Event event) async {
+    final db = await database;
+    await db.update(
+      eventsTableName,
+      event.toMap(),
+      where: 'id = ?',
+      whereArgs: [event.id],
+    );
+  }
+
+  Future<void> deleteEvent(int id) async {
+    final db = await database;
+    await db.delete(
+      eventsTableName,
+      where: 'id = ?',
       whereArgs: [id],
     );
   }

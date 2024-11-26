@@ -1,9 +1,11 @@
 import 'package:baseballanotation/screen/calendario/calendar.dart';
 import 'package:baseballanotation/screen/home.dart';
 import 'package:baseballanotation/screen/lideres.dart';
+import 'package:baseballanotation/services/database_services.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
