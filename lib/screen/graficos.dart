@@ -3,6 +3,12 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../models/player.dart';
 import '../services/database_services.dart';
 
+enum ChartType {
+  column,
+  pie,
+  line
+}
+
 class Graficos extends StatefulWidget {
   const Graficos({super.key});
 
@@ -13,6 +19,7 @@ class Graficos extends StatefulWidget {
 class _GraficosState extends State<Graficos> {
   late Future<List<Player>> _playersFuture;
   late TooltipBehavior _tooltipBehavior;
+  ChartType _currentChartType = ChartType.column;
 
   @override
   void initState() {
@@ -41,7 +48,59 @@ class _GraficosState extends State<Graficos> {
             _buildPitchersCharts(),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _showChartOptionsDialog(context),
+          child: const Icon(Icons.bar_chart),
+        ),
       ),
+    );
+  }
+
+  void _showChartOptionsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Seleccionar tipo de gráfico'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.bar_chart),
+                  title: const Text('Gráfico de Barras'),
+                  onTap: () {
+                    setState(() {
+                      _currentChartType = ChartType.column;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.pie_chart),
+                  title: const Text('Gráfico Circular'),
+                  onTap: () {
+                    setState(() {
+                      _currentChartType = ChartType.pie;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.show_chart),
+                  title: const Text('Gráfico de Líneas'),
+                  onTap: () {
+                    setState(() {
+                      _currentChartType = ChartType.line;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -133,33 +192,70 @@ class _GraficosState extends State<Graficos> {
     );
   }
 
-  Widget _buildChart(
-    String title,
-    List<Player> players,
-    double Function(Player) getValue,
-    String Function(double) formatValue,
-  ) {
-    return Container(
-      height: 300,
-      padding: const EdgeInsets.all(8),
-      child: SfCartesianChart(
-        title: ChartTitle(text: title),
-        tooltipBehavior: _tooltipBehavior,
-        primaryXAxis: CategoryAxis(
-          labelRotation: 45,
-          labelStyle: const TextStyle(fontSize: 10),
-        ),
-        series: [
-          BarSeries<Player, String>(
-            dataSource: players,
-            xValueMapper: (Player player, _) => player.name,
-            yValueMapper: (Player player, _) => getValue(player),
-            dataLabelSettings: const DataLabelSettings(
-              isVisible: true,
+  Widget _buildChart(String title, List<Player> players, double Function(Player) getValue, String Function(double) formatValue) {
+    switch (_currentChartType) {
+      case ChartType.column:
+        return Container(
+          height: 300,
+          padding: const EdgeInsets.all(8),
+          child: SfCartesianChart(
+            title: ChartTitle(text: title),
+            tooltipBehavior: _tooltipBehavior,
+            primaryXAxis: CategoryAxis(
+              labelRotation: 45,
+              labelStyle: const TextStyle(fontSize: 10),
             ),
-          )
-        ],
-      ),
-    );
+            series: <CartesianSeries>[
+              ColumnSeries<Player, String>(
+                dataSource: players,
+                xValueMapper: (Player player, _) => player.name,
+                yValueMapper: (Player player, _) => getValue(player),
+                dataLabelSettings: const DataLabelSettings(isVisible: true),
+                name: title,
+              )
+            ],
+          ),
+        );
+      case ChartType.line:
+        return Container(
+          height: 300,
+          padding: const EdgeInsets.all(8),
+          child: SfCartesianChart(
+            title: ChartTitle(text: title),
+            tooltipBehavior: _tooltipBehavior,
+            primaryXAxis: CategoryAxis(
+              labelRotation: 45,
+              labelStyle: const TextStyle(fontSize: 10),
+            ),
+            series: <CartesianSeries>[
+              LineSeries<Player, String>(
+                dataSource: players,
+                xValueMapper: (Player player, _) => player.name,
+                yValueMapper: (Player player, _) => getValue(player),
+                dataLabelSettings: const DataLabelSettings(isVisible: true),
+                name: title,
+              )
+            ],
+          ),
+        );
+      case ChartType.pie:
+        return Container(
+          height: 300,
+          padding: const EdgeInsets.all(8),
+          child: SfCircularChart(
+            title: ChartTitle(text: title),
+            tooltipBehavior: _tooltipBehavior,
+            series: <CircularSeries>[
+              PieSeries<Player, String>(
+                dataSource: players,
+                xValueMapper: (Player player, _) => player.name,
+                yValueMapper: (Player player, _) => getValue(player),
+                dataLabelSettings: const DataLabelSettings(isVisible: true),
+                name: title,
+              )
+            ],
+          ),
+        );
+    }
   }
 }
