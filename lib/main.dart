@@ -1,4 +1,5 @@
 import 'package:baseballanotation/screen/calendario/calendar.dart';
+import 'package:baseballanotation/screen/graficos.dart';
 import 'package:baseballanotation/screen/home.dart';
 import 'package:baseballanotation/screen/lideres.dart';
 import 'package:baseballanotation/services/database_services.dart';
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
       routes: {
           'home':(context)=>Home(),
           'lideres':(context)=>Lideres(),
-          'calendario':(context)=>EventCalendar()
+          'calendario':(context)=>EventCalendar(),
+          'graficos':(context)=>Graficos()
       },
       theme: ThemeData(
         
@@ -71,7 +73,12 @@ class _MyHomePageState extends State<MyHomePage> {
             _buildItem(
               icon: Icons.notifications_rounded, 
               title: "Lideres", 
-              ontap: ()=>Navigator.pushNamed(context,"lideres"))
+              ontap: ()=>Navigator.pushNamed(context,"lideres")),
+
+            _buildItem(
+              icon: Icons.notifications_rounded, 
+              title: "Graficos", 
+              ontap: ()=>Navigator.pushNamed(context,"graficos")),  
 
           ],
         ) ,
