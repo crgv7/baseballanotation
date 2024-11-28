@@ -1,6 +1,7 @@
 import 'package:baseballanotation/models/player.dart';
 import 'package:baseballanotation/models/event.dart';
 import 'package:baseballanotation/models/team.dart';
+import 'package:baseballanotation/models/my_team.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -12,6 +13,7 @@ class DatabaseServices {
   final String tableName = 'players';
   final String eventsTableName = 'events';
   final String teamsTableName = 'teams';
+  final String myTeamTableName = 'my_team';
   final String columnId = 'id';
   final String columnName = 'name';
   final String columnIsPitcher = 'is_pitcher';
@@ -58,91 +60,119 @@ class DatabaseServices {
     final databasePath = join(databaseDirPath, 'baseball_stats.db');
     final database = await openDatabase(
       databasePath,
-      version: 3,
+      version: 4,
       onCreate: (db, version) async {
-        // Crear tabla de jugadores
-        await db.execute(''' 
-        CREATE TABLE $tableName(
-          $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-          $columnName TEXT NOT NULL,
-          $columnIsPitcher INTEGER NOT NULL,
-          $columnHits INTEGER,
-          $columnAtBats INTEGER,
-          $columnAverage REAL,
-          $columnHomeRuns INTEGER,
-          $columnRbi INTEGER,
-          $columnRuns INTEGER,
-          $columnStolenBases INTEGER,
-          $columnObp REAL,
-          $columnSlg REAL,
-          $columnWins INTEGER,
-          $columnLosses INTEGER,
-          $columnEra REAL,
-          $columnStrikeouts INTEGER,
-          $columnWalks INTEGER,
-          $columnWhip REAL,
-          $columnInningsPitched INTEGER,
-          $columnSaves INTEGER
-        )
-        ''');
-
-        // Crear tabla de eventos
-        await db.execute('''
-        CREATE TABLE $eventsTableName(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          eventName TEXT NOT NULL,
-          [from] TEXT NOT NULL,
-          [to] TEXT NOT NULL,
-          notes TEXT,
-          isAllDay INTEGER NOT NULL,
-          colorIndex INTEGER NOT NULL
-        )
-        ''');
-
-        // Crear tabla de equipos
-        await db.execute('''
-        CREATE TABLE $teamsTableName(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT NOT NULL,
-          imageUrl TEXT,
-          wins INTEGER NOT NULL,
-          losses INTEGER NOT NULL,
-          runs INTEGER NOT NULL
-        )
-        ''');
+        await _createTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion == 1) {
-          // Si la versión es 1, solo necesitamos agregar la tabla de eventos
-          print('Upgrading database from version $oldVersion to $newVersion');
-          await db.execute(''' 
-          CREATE TABLE IF NOT EXISTS $eventsTableName(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            eventName TEXT NOT NULL,
-            [from] TEXT NOT NULL,
-            [to] TEXT NOT NULL,
-            notes TEXT,
-            isAllDay INTEGER NOT NULL,
-            colorIndex INTEGER NOT NULL
-          )
+        print('Upgrading database from version $oldVersion to $newVersion');
+        
+        if (oldVersion < 2) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS $eventsTableName(
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              eventName TEXT NOT NULL,
+              [from] TEXT NOT NULL,
+              [to] TEXT NOT NULL,
+              notes TEXT,
+              isAllDay INTEGER NOT NULL,
+              colorIndex INTEGER NOT NULL
+            )
           ''');
-        } else if (oldVersion == 2) {
-          // Si la versión es 2, solo necesitamos agregar la tabla de equipos
-          print('Upgrading database from version $oldVersion to $newVersion');
-          await db.execute(''' 
-          CREATE TABLE IF NOT EXISTS $teamsTableName(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            imageUrl TEXT,
-            wins INTEGER NOT NULL,
-            losses INTEGER NOT NULL,
-            runs INTEGER NOT NULL
-          )
+        }
+
+        if (oldVersion < 3) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS $teamsTableName(
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT NOT NULL,
+              imageUrl TEXT,
+              wins INTEGER NOT NULL,
+              losses INTEGER NOT NULL,
+              runs INTEGER NOT NULL
+            )
+          ''');
+        }
+
+        if (oldVersion < 4) {
+          // Crear la tabla my_team si no existe
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS $myTeamTableName(
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT,
+              imageUrl TEXT,
+              wins INTEGER DEFAULT 0,
+              losses INTEGER DEFAULT 0,
+              runsScored INTEGER DEFAULT 0,
+              runsAllowed INTEGER DEFAULT 0
+            )
           ''');
         }
       },
     );
     return database;
+  }
+
+  Future<void> _createTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS $tableName (
+        $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+        $columnName TEXT NOT NULL,
+        $columnIsPitcher INTEGER NOT NULL,
+        $columnHits INTEGER,
+        $columnAtBats INTEGER,
+        $columnAverage REAL,
+        $columnHomeRuns INTEGER,
+        $columnRbi INTEGER,
+        $columnRuns INTEGER,
+        $columnStolenBases INTEGER,
+        $columnObp REAL,
+        $columnSlg REAL,
+        $columnWins INTEGER,
+        $columnLosses INTEGER,
+        $columnEra REAL,
+        $columnStrikeouts INTEGER,
+        $columnWalks INTEGER,
+        $columnWhip REAL,
+        $columnInningsPitched INTEGER,
+        $columnSaves INTEGER
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS $eventsTableName(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        eventName TEXT NOT NULL,
+        [from] TEXT NOT NULL,
+        [to] TEXT NOT NULL,
+        notes TEXT,
+        isAllDay INTEGER NOT NULL,
+        colorIndex INTEGER NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS $teamsTableName(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        imageUrl TEXT,
+        wins INTEGER NOT NULL,
+        losses INTEGER NOT NULL,
+        runs INTEGER NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS $myTeamTableName(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        imageUrl TEXT,
+        wins INTEGER DEFAULT 0,
+        losses INTEGER DEFAULT 0,
+        runsScored INTEGER DEFAULT 0,
+        runsAllowed INTEGER DEFAULT 0
+      )
+    ''');
   }
 
   Future<void> addPlayer(Player player) async {
@@ -420,5 +450,47 @@ class DatabaseServices {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  // Operaciones CRUD para Mi Equipo
+  Future<MyTeam?> getMyTeam() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(myTeamTableName);
+    
+    if (maps.isEmpty) {
+      return null;
+    }
+    
+    return MyTeam.fromMap(maps.first);
+  }
+
+  Future<void> saveMyTeam(MyTeam team) async {
+    final db = await database;
+    
+    // Primero eliminamos cualquier equipo existente
+    await db.delete(myTeamTableName);
+    
+    // Luego insertamos el nuevo equipo
+    await db.insert(
+      myTeamTableName,
+      team.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> updateMyTeam(MyTeam team) async {
+    final db = await database;
+    
+    await db.update(
+      myTeamTableName,
+      team.toMap(),
+      where: 'id = ?',
+      whereArgs: [team.id],
+    );
+  }
+
+  Future<void> deleteMyTeam() async {
+    final db = await database;
+    await db.delete(myTeamTableName);
   }
 }

@@ -3,15 +3,26 @@ import 'package:baseballanotation/screen/graficos.dart';
 import 'package:baseballanotation/screen/home.dart';
 import 'package:baseballanotation/screen/lideres.dart';
 import 'package:baseballanotation/screen/teams/teams_screen.dart';
+import 'package:baseballanotation/screen/my_team/my_team_screen.dart';
 import 'package:baseballanotation/services/database_services.dart';
 import 'package:baseballanotation/models/player.dart';
 import 'package:baseballanotation/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Eliminar la base de datos existente para forzar la actualización
+  final databasePath = join(await getDatabasesPath(), 'baseball_stats.db');
+  await deleteDatabase(databasePath);
+  
+  // Inicializar la base de datos
+  await DatabaseServices.instance.getDatabase();
+  
   runApp(const MyApp());
 }
 
@@ -34,6 +45,7 @@ class MyApp extends StatelessWidget {
         'lideres': (context) => Lideres(),
         'graficos': (context) => const Graficos(),
         '/teams': (context) => const TeamsScreen(),
+        '/my-team': (context) => const MyTeamScreen(),
       },
     );
   }
@@ -49,50 +61,43 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late Future<List<Player>> _playersFuture;
-  final StreamController<List<Event>> _eventsController =
-      StreamController<List<Event>>.broadcast();
-  bool _isDisposed = false;
+  final DatabaseServices _databaseServices = DatabaseServices.instance;
+  List<Player> players = [];
+  List<Event> events = [];
+  StreamController<List<Event>> _eventsController = StreamController<List<Event>>.broadcast();
+  Stream<List<Event>> get eventsStream => _eventsController.stream;
 
   @override
   void initState() {
     super.initState();
-    _playersFuture = DatabaseServices.instance.getPlayers();
+    _loadPlayers();
     _loadEvents();
 
     // Configurar actualización periódica
     Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (!_isDisposed) {
-        _loadEvents();
-      } else {
-        timer.cancel();
-      }
+      _loadEvents();
+    });
+  }
+
+  Future<void> _loadPlayers() async {
+    final loadedPlayers = await _databaseServices.getPlayers();
+    setState(() {
+      players = loadedPlayers;
+    });
+  }
+
+  Future<void> _loadEvents() async {
+    final loadedEvents = await _databaseServices.getEvents();
+    setState(() {
+      events = loadedEvents;
+      _eventsController.add(loadedEvents);
     });
   }
 
   @override
   void dispose() {
-    _isDisposed = true;
     _eventsController.close();
     super.dispose();
-  }
-
-  Future<void> _loadEvents() async {
-    if (!_isDisposed) {
-      try {
-        print('Cargando eventos...'); // Debug
-        final events = await DatabaseServices.instance.getUpcomingEvents();
-        print('Eventos cargados: ${events.length}'); // Debug
-        if (!_isDisposed) {
-          _eventsController.add(events);
-        }
-      } catch (e) {
-        print('Error al cargar eventos: $e'); // Debug
-        if (!_isDisposed) {
-          _eventsController.addError(e);
-        }
-      }
-    }
   }
 
   Widget _buildLeaderCard(String category, String value, String playerName) {
@@ -135,89 +140,60 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildLeadersGrid() {
-    return FutureBuilder<List<Player>>(
-      future: _playersFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No hay datos disponibles'));
-        }
+    // Encontrar líderes
+    Player? battingLeader;
+    Player? homeRunLeader;
+    Player? rbiLeader;
+    Player? hitsLeader;
 
-        final players = snapshot.data!;
+    for (var player in players) {
+      if (battingLeader == null || 
+          (player.average ?? 0) > (battingLeader.average ?? 0)) {
+        battingLeader = player;
+      }
+      if (homeRunLeader == null || 
+          (player.homeRuns ?? 0) > (homeRunLeader.homeRuns ?? 0)) {
+        homeRunLeader = player;
+      }
+      if (rbiLeader == null || 
+          (player.rbi ?? 0) > (rbiLeader.rbi ?? 0)) {
+        rbiLeader = player;
+      }
+      if (hitsLeader == null || 
+          (player.hits ?? 0) > (hitsLeader.hits ?? 0)) {
+        hitsLeader = player;
+      }
+    }
 
-        // Encontrar líderes
-        Player? battingLeader;
-        Player? homeRunLeader;
-        Player? rbiLeader;
-        Player? hitsLeader;
-
-        for (var player in players) {
-          if (battingLeader == null ||
-              (player.average ?? 0) > (battingLeader.average ?? 0)) {
-            battingLeader = player;
-          }
-          if (homeRunLeader == null ||
-              (player.homeRuns ?? 0) > (homeRunLeader.homeRuns ?? 0)) {
-            homeRunLeader = player;
-          }
-          if (rbiLeader == null || (player.rbi ?? 0) > (rbiLeader.rbi ?? 0)) {
-            rbiLeader = player;
-          }
-          if (hitsLeader == null ||
-              (player.hits ?? 0) > (hitsLeader.hits ?? 0)) {
-            hitsLeader = player;
-          }
-        }
-
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Líderes',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 1.5,
-                children: [
-                  _buildLeaderCard(
-                    'Promedio de Bateo',
-                    ((battingLeader?.average ?? 0.0) * 1000).toStringAsFixed(0),
-                    battingLeader?.name ?? 'N/A',
-                  ),
-                  _buildLeaderCard(
-                    'Home Runs',
-                    (homeRunLeader?.homeRuns ?? 0).toString(),
-                    homeRunLeader?.name ?? 'N/A',
-                  ),
-                  _buildLeaderCard(
-                    'RBIs',
-                    (rbiLeader?.rbi ?? 0).toString(),
-                    rbiLeader?.name ?? 'N/A',
-                  ),
-                  _buildLeaderCard(
-                    'Hits',
-                    (hitsLeader?.hits ?? 0).toString(),
-                    hitsLeader?.name ?? 'N/A',
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      childAspectRatio: 1.5,
+      children: [
+        _buildLeaderCard(
+          'Promedio de Bateo',
+          ((battingLeader?.average ?? 0.0) * 1000).toStringAsFixed(0),
+          battingLeader?.name ?? 'N/A',
+        ),
+        _buildLeaderCard(
+          'Home Runs',
+          (homeRunLeader?.homeRuns ?? 0).toString(),
+          homeRunLeader?.name ?? 'N/A',
+        ),
+        _buildLeaderCard(
+          'RBIs',
+          (rbiLeader?.rbi ?? 0).toString(),
+          rbiLeader?.name ?? 'N/A',
+        ),
+        _buildLeaderCard(
+          'Hits',
+          (hitsLeader?.hits ?? 0).toString(),
+          hitsLeader?.name ?? 'N/A',
+        ),
+      ],
     );
   }
 
@@ -361,6 +337,14 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.shield),
+              title: const Text('Mi Equipo'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/my-team');
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.leaderboard),
               title: const Text('Líderes'),
               onTap: () {
@@ -379,18 +363,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildItem({
-    required IconData icon,
-    required String title,
-    required GestureTapCallback ontap,
-  }) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      onTap: ontap,
     );
   }
 }
