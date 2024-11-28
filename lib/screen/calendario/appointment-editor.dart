@@ -11,20 +11,34 @@ class AppointmentEditorState extends State<AppointmentEditor> {
   final DatabaseServices databaseServices = DatabaseServices.instance;
 
   Future<void> _saveEvent(Meeting meeting) async {
-    final event = Event(
-      id: meeting.id,
-      eventName: meeting.eventName,
-      from: meeting.from,
-      to: meeting.to,
-      notes: meeting.notes,
-      isAllDay: meeting.isAllDay,
-      colorIndex: _colorCollection.indexOf(meeting.background),
-    );
+    try {
+      final event = Event(
+        id: meeting.id,
+        eventName: meeting.eventName,
+        from: meeting.from,
+        to: meeting.to,
+        notes: meeting.notes,
+        isAllDay: meeting.isAllDay,
+        colorIndex: _colorCollection.indexOf(meeting.background),
+      );
 
-    if (event.id == null) {
-      await databaseServices.addEvent(event);
-    } else {
-      await databaseServices.updateEvent(event);
+      print('Guardando evento: ${event.eventName}'); // Debug
+      print('Fecha inicio: ${event.from}'); // Debug
+      print('Fecha fin: ${event.to}'); // Debug
+
+      if (event.id == null) {
+        await databaseServices.addEvent(event);
+        print('Evento agregado exitosamente'); // Debug
+      } else {
+        await databaseServices.updateEvent(event);
+        print('Evento actualizado exitosamente'); // Debug
+      }
+
+      // Navegar de vuelta a la pantalla principal después de guardar
+      if (!mounted) return;
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } catch (e) {
+      print('Error al guardar evento: $e'); // Debug
     }
   }
 

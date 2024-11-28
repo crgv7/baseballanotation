@@ -45,6 +45,12 @@ class DatabaseServices {
     _database = null;
   }
 
+  Future<void> resetDatabase() async {
+    await deleteDatabase();
+    _database = null;
+    await getDatabase();
+  }
+
   Future<Database> getDatabase() async {
     final databaseDirPath = await getDatabasesPath();
     final databasePath = join(databaseDirPath, 'baseball_stats.db');
@@ -53,7 +59,7 @@ class DatabaseServices {
       version: 2,
       onCreate: (db, version) async {
         // Crear tabla de jugadores
-        await db.execute('''
+        await db.execute(''' 
         CREATE TABLE $tableName(
           $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
           $columnName TEXT NOT NULL,
@@ -83,8 +89,8 @@ class DatabaseServices {
         CREATE TABLE $eventsTableName(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           eventName TEXT NOT NULL,
-          'from' TEXT NOT NULL,
-          'to' TEXT NOT NULL,
+          [from] TEXT NOT NULL,
+          [to] TEXT NOT NULL,
           notes TEXT,
           isAllDay INTEGER NOT NULL,
           colorIndex INTEGER NOT NULL
@@ -95,12 +101,12 @@ class DatabaseServices {
         if (oldVersion == 1) {
           // Si la versión es 1, solo necesitamos agregar la tabla de eventos
           print('Upgrading database from version $oldVersion to $newVersion');
-          await db.execute('''
+          await db.execute(''' 
           CREATE TABLE IF NOT EXISTS $eventsTableName(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             eventName TEXT NOT NULL,
-            'from' TEXT NOT NULL,
-            'to' TEXT NOT NULL,
+            [from] TEXT NOT NULL,
+            [to] TEXT NOT NULL,
             notes TEXT,
             isAllDay INTEGER NOT NULL,
             colorIndex INTEGER NOT NULL
@@ -303,5 +309,58 @@ class DatabaseServices {
     return List.generate(maps.length, (i) {
       return Player.fromMap(maps[i]);
     });
+  }
+
+  Future<List<Event>> getUpcomingEvents() async {
+    try {
+      final db = await database;
+      
+      // Obtener la fecha actual sin la hora
+      final now = DateTime.now().subtract(Duration(
+        hours: DateTime.now().hour,
+        minutes: DateTime.now().minute,
+        seconds: DateTime.now().second,
+        milliseconds: DateTime.now().millisecond,
+        microseconds: DateTime.now().microsecond,
+      ));
+      
+      final sevenDaysLater = now.add(const Duration(days: 7));
+
+      // Convertir fechas a strings en formato ISO
+      final nowStr = now.toIso8601String();
+      final laterStr = sevenDaysLater.toIso8601String();
+
+      print('Consultando eventos...'); // Debug
+      print('Desde: $nowStr'); // Debug
+      print('Hasta: $laterStr'); // Debug
+
+      // Primero, obtener todos los eventos para debug
+      final allEvents = await db.query(eventsTableName);
+      print('Total de eventos en la base de datos: ${allEvents.length}'); // Debug
+      
+      // Ahora obtener los eventos filtrados
+      final List<Map<String, dynamic>> maps = await db.query(
+        eventsTableName,
+        where: "[to] >= ? AND [from] <= ?",
+        whereArgs: [nowStr, laterStr],
+        orderBy: "[from] ASC",
+      );
+
+      print('Eventos encontrados para el período: ${maps.length}'); // Debug
+      
+      // Imprimir cada evento encontrado para debug
+      for (var map in maps) {
+        print('Evento: ${map['eventName']}');
+        print('Desde: ${map['from']}');
+        print('Hasta: ${map['to']}');
+      }
+
+      return List.generate(maps.length, (i) {
+        return Event.fromMap(maps[i]);
+      });
+    } catch (e) {
+      print('Error al obtener eventos: $e'); // Debug
+      return [];
+    }
   }
 }
