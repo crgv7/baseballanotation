@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
 
         final players = snapshot.data!;
-        
+
         // Encontrar líderes
         Player? battingLeader;
         Player? homeRunLeader;
@@ -115,16 +115,19 @@ class _MyHomePageState extends State<MyHomePage> {
         Player? hitsLeader;
 
         for (var player in players) {
-          if (battingLeader == null || (player.average ?? 0) > (battingLeader.average ?? 0)) {
+          if (battingLeader == null ||
+              (player.average ?? 0) > (battingLeader.average ?? 0)) {
             battingLeader = player;
           }
-          if (homeRunLeader == null || (player.homeRuns ?? 0) > (homeRunLeader.homeRuns ?? 0)) {
+          if (homeRunLeader == null ||
+              (player.homeRuns ?? 0) > (homeRunLeader.homeRuns ?? 0)) {
             homeRunLeader = player;
           }
           if (rbiLeader == null || (player.rbi ?? 0) > (rbiLeader.rbi ?? 0)) {
             rbiLeader = player;
           }
-          if (hitsLeader == null || (player.hits ?? 0) > (hitsLeader.hits ?? 0)) {
+          if (hitsLeader == null ||
+              (player.hits ?? 0) > (hitsLeader.hits ?? 0)) {
             hitsLeader = player;
           }
         }
@@ -167,28 +170,55 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: _buildLeadersGrid(),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
-            _buildItem(
-              icon: Icons.home,
-              title: "Home",
-              ontap: () => Navigator.pushNamed(context, "home")
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
+              child: Container(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Baseball Annotation',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            _buildItem(
-              icon: Icons.calendar_today,
-              title: "Calendario",
-              ontap: () => Navigator.pushNamed(context, "calendario")
-            ),
-            _buildItem(
-              icon: Icons.leaderboard,
-              title: "Lideres",
-              ontap: () => Navigator.pushNamed(context, "lideres")
-            ),
-            _buildItem(
-              icon: Icons.bar_chart,
-              title: "Graficos",
-              ontap: () => Navigator.pushNamed(context, "graficos")
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  _buildItem(
+                    icon: Icons.home,
+                    title: "Home",
+                    ontap: () => Navigator.pushNamed(context, "home"),
+                  ),
+                  _buildItem(
+                    icon: Icons.calendar_today,
+                    title: "Calendario",
+                    ontap: () => Navigator.pushNamed(context, "calendario"),
+                  ),
+                  _buildItem(
+                    icon: Icons.leaderboard,
+                    title: "Lideres",
+                    ontap: () => Navigator.pushNamed(context, "lideres"),
+                  ),
+                  _buildItem(
+                    icon: Icons.bar_chart,
+                    title: "Graficos",
+                    ontap: () => Navigator.pushNamed(context, "graficos"),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -196,7 +226,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildItem({required IconData icon, required String title, required GestureTapCallback ontap}) {
+  Widget _buildItem({
+    required IconData icon,
+    required String title,
+    required GestureTapCallback ontap,
+  }) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
