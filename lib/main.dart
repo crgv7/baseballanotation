@@ -4,6 +4,7 @@ import 'package:baseballanotation/screen/home.dart';
 import 'package:baseballanotation/screen/lideres.dart';
 import 'package:baseballanotation/screen/teams/teams_screen.dart';
 import 'package:baseballanotation/screen/my_team/my_team_screen.dart';
+import 'package:baseballanotation/screen/games/games_screen.dart';
 import 'package:baseballanotation/services/database_services.dart';
 import 'package:baseballanotation/models/player.dart';
 import 'package:baseballanotation/models/event.dart';
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         'graficos': (context) => const Graficos(),
         '/teams': (context) => const TeamsScreen(),
         '/my-team': (context) => const MyTeamScreen(),
+        '/games': (context) => const GamesScreen(),
       },
     );
   }
@@ -342,6 +344,14 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/my-team');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.sports_baseball),
+              title: const Text('Juegos'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/games');
               },
             ),
             ListTile(

@@ -2,6 +2,7 @@ import 'package:baseballanotation/models/player.dart';
 import 'package:baseballanotation/models/event.dart';
 import 'package:baseballanotation/models/team.dart';
 import 'package:baseballanotation/models/my_team.dart';
+import 'package:baseballanotation/models/game.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -14,6 +15,7 @@ class DatabaseServices {
   final String eventsTableName = 'events';
   final String teamsTableName = 'teams';
   final String myTeamTableName = 'my_team';
+  final String gamesTableName = 'games';
   final String columnId = 'id';
   final String columnName = 'name';
   final String columnIsPitcher = 'is_pitcher';
@@ -60,7 +62,7 @@ class DatabaseServices {
     final databasePath = join(databaseDirPath, 'baseball_stats.db');
     final database = await openDatabase(
       databasePath,
-      version: 4,
+      version: 5,
       onCreate: (db, version) async {
         await _createTables(db);
       },
@@ -105,6 +107,21 @@ class DatabaseServices {
               losses INTEGER DEFAULT 0,
               runsScored INTEGER DEFAULT 0,
               runsAllowed INTEGER DEFAULT 0
+            )
+          ''');
+        }
+
+        if (oldVersion < 5) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS $gamesTableName(
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              myTeamId INTEGER NOT NULL,
+              opponentTeamId INTEGER NOT NULL,
+              myTeamRuns INTEGER NOT NULL,
+              opponentTeamRuns INTEGER NOT NULL,
+              year INTEGER NOT NULL,
+              FOREIGN KEY (myTeamId) REFERENCES my_team(id),
+              FOREIGN KEY (opponentTeamId) REFERENCES teams(id)
             )
           ''');
         }
@@ -171,6 +188,19 @@ class DatabaseServices {
         losses INTEGER DEFAULT 0,
         runsScored INTEGER DEFAULT 0,
         runsAllowed INTEGER DEFAULT 0
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS $gamesTableName(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        myTeamId INTEGER NOT NULL,
+        opponentTeamId INTEGER NOT NULL,
+        myTeamRuns INTEGER NOT NULL,
+        opponentTeamRuns INTEGER NOT NULL,
+        year INTEGER NOT NULL,
+        FOREIGN KEY (myTeamId) REFERENCES my_team(id),
+        FOREIGN KEY (opponentTeamId) REFERENCES teams(id)
       )
     ''');
   }
@@ -492,5 +522,50 @@ class DatabaseServices {
   Future<void> deleteMyTeam() async {
     final db = await database;
     await db.delete(myTeamTableName);
+  }
+
+  // Métodos para Juegos
+  Future<List<Game>> getGames() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(gamesTableName);
+    return List.generate(maps.length, (i) => Game.fromMap(maps[i]));
+  }
+
+  Future<Game> getGame(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      gamesTableName,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return Game.fromMap(maps.first);
+  }
+
+  Future<int> saveGame(Game game) async {
+    final db = await database;
+    return await db.insert(
+      gamesTableName,
+      game.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> updateGame(Game game) async {
+    final db = await database;
+    return await db.update(
+      gamesTableName,
+      game.toMap(),
+      where: 'id = ?',
+      whereArgs: [game.id],
+    );
+  }
+
+  Future<int> deleteGame(int id) async {
+    final db = await database;
+    return await db.delete(
+      gamesTableName,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }
