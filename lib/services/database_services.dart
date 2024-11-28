@@ -1,5 +1,6 @@
 import 'package:baseballanotation/models/player.dart';
 import 'package:baseballanotation/models/event.dart';
+import 'package:baseballanotation/models/team.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,6 +11,7 @@ class DatabaseServices {
 
   final String tableName = 'players';
   final String eventsTableName = 'events';
+  final String teamsTableName = 'teams';
   final String columnId = 'id';
   final String columnName = 'name';
   final String columnIsPitcher = 'is_pitcher';
@@ -56,7 +58,7 @@ class DatabaseServices {
     final databasePath = join(databaseDirPath, 'baseball_stats.db');
     final database = await openDatabase(
       databasePath,
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         // Crear tabla de jugadores
         await db.execute(''' 
@@ -96,6 +98,18 @@ class DatabaseServices {
           colorIndex INTEGER NOT NULL
         )
         ''');
+
+        // Crear tabla de equipos
+        await db.execute('''
+        CREATE TABLE $teamsTableName(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          imageUrl TEXT,
+          wins INTEGER NOT NULL,
+          losses INTEGER NOT NULL,
+          runs INTEGER NOT NULL
+        )
+        ''');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion == 1) {
@@ -110,6 +124,19 @@ class DatabaseServices {
             notes TEXT,
             isAllDay INTEGER NOT NULL,
             colorIndex INTEGER NOT NULL
+          )
+          ''');
+        } else if (oldVersion == 2) {
+          // Si la versión es 2, solo necesitamos agregar la tabla de equipos
+          print('Upgrading database from version $oldVersion to $newVersion');
+          await db.execute(''' 
+          CREATE TABLE IF NOT EXISTS $teamsTableName(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            imageUrl TEXT,
+            wins INTEGER NOT NULL,
+            losses INTEGER NOT NULL,
+            runs INTEGER NOT NULL
           )
           ''');
         }
@@ -362,5 +389,36 @@ class DatabaseServices {
       print('Error al obtener eventos: $e'); // Debug
       return [];
     }
+  }
+
+  // Operaciones CRUD para equipos
+  Future<int> addTeam(Team team) async {
+    final db = await database;
+    return await db.insert(teamsTableName, team.toMap());
+  }
+
+  Future<List<Team>> getTeams() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(teamsTableName);
+    return List.generate(maps.length, (i) => Team.fromMap(maps[i]));
+  }
+
+  Future<int> updateTeam(Team team) async {
+    final db = await database;
+    return await db.update(
+      teamsTableName,
+      team.toMap(),
+      where: 'id = ?',
+      whereArgs: [team.id],
+    );
+  }
+
+  Future<int> deleteTeam(int id) async {
+    final db = await database;
+    return await db.delete(
+      teamsTableName,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

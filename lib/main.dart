@@ -2,6 +2,7 @@ import 'package:baseballanotation/screen/calendario/calendar.dart';
 import 'package:baseballanotation/screen/graficos.dart';
 import 'package:baseballanotation/screen/home.dart';
 import 'package:baseballanotation/screen/lideres.dart';
+import 'package:baseballanotation/screen/teams/teams_screen.dart';
 import 'package:baseballanotation/services/database_services.dart';
 import 'package:baseballanotation/models/player.dart';
 import 'package:baseballanotation/models/event.dart';
@@ -20,18 +21,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      routes: {
-        'home': (context) => Home(),
-        'lideres': (context) => Lideres(),
-        'calendario': (context) => EventCalendar(),
-        'graficos': (context) => Graficos()
-      },
+      title: 'Baseball Stats',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'BallAnotations'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const MyHomePage(title: 'Baseball Stats'),
+        'home': (context) => const Home(),
+        'calendario': (context) => const EventCalendar(),
+        'lideres': (context) => Lideres(),
+        'graficos': (context) => const Graficos(),
+        '/teams': (context) => const TeamsScreen(),
+      },
     );
   }
 }
@@ -47,7 +50,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late Future<List<Player>> _playersFuture;
-  final StreamController<List<Event>> _eventsController = StreamController<List<Event>>.broadcast();
+  final StreamController<List<Event>> _eventsController =
+      StreamController<List<Event>>.broadcast();
   bool _isDisposed = false;
 
   @override
@@ -281,7 +285,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   return ListTile(
                     leading: Icon(
                       Icons.event,
-                      color: Colors.accents[event.colorIndex % Colors.accents.length],
+                      color: Colors
+                          .accents[event.colorIndex % Colors.accents.length],
                     ),
                     title: Text(event.eventName),
                     subtitle: Text(
@@ -316,55 +321,60 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       drawer: Drawer(
-        child: Column(
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.inversePrimary,
+                color: Colors.deepPurple,
               ),
-              child: Container(
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Baseball Annotation',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+              child: Text(
+                'Baseball Stats',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
                 ),
               ),
             ),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  _buildItem(
-                    icon: Icons.home,
-                    title: "Home",
-                    ontap: () => Navigator.pushNamed(context, "home"),
-                  ),
-                  _buildItem(
-                    icon: Icons.calendar_today,
-                    title: "Calendario",
-                    ontap: () => Navigator.pushNamed(context, "calendario"),
-                  ),
-                  _buildItem(
-                    icon: Icons.leaderboard,
-                    title: "Lideres",
-                    ontap: () => Navigator.pushNamed(context, "lideres"),
-                  ),
-                  _buildItem(
-                    icon: Icons.bar_chart,
-                    title: "Graficos",
-                    ontap: () => Navigator.pushNamed(context, "graficos"),
-                  ),
-                ],
-              ),
+            ListTile(
+              leading: const Icon(Icons.people),
+              title: const Text('Jugadores'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, 'home');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calendar_today),
+              title: const Text('Calendario'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, 'calendario');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.sports_baseball),
+              title: const Text('Equipos'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/teams');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.leaderboard),
+              title: const Text('Líderes'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, 'lideres');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.bar_chart),
+              title: const Text('Gráficos'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, 'graficos');
+              },
             ),
           ],
         ),
