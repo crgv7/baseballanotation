@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:baseballanotation/screen/configuration/configuration_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
         '/teams': (context) => const TeamsScreen(),
         '/my-team': (context) => const MyTeamScreen(),
         '/games': (context) => const GamesScreen(),
+        '/configuration': (context) => const ConfigurationScreen(),
       },
     );
   }
@@ -368,6 +370,15 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, 'graficos');
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Configuración'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/configuration');
               },
             ),
           ],
