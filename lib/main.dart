@@ -16,6 +16,7 @@ import 'package:path/path.dart';
 import 'package:baseballanotation/screen/configuration/configuration_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
+import 'package:baseballanotation/screen/about/about_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
             '/my-team': (context) => const MyTeamScreen(),
             '/games': (context) => const GamesScreen(),
             '/configuration': (context) => const ConfigurationScreen(),
+            '/about': (context) => const AboutScreen(),
           },
         );
       },
@@ -328,7 +330,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.deepPurple,
+                color: Colors.blue,
               ),
               child: Text(
                 'Baseball Stats',
@@ -339,10 +341,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.people),
-              title: const Text('Jugadores'),
+              leading: const Icon(Icons.home),
+              title: const Text('Inicio'),
               onTap: () {
-                Navigator.pop(context);
                 Navigator.pushNamed(context, 'home');
               },
             ),
@@ -350,39 +351,13 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.calendar_today),
               title: const Text('Calendario'),
               onTap: () {
-                Navigator.pop(context);
                 Navigator.pushNamed(context, 'calendario');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.sports_baseball),
-              title: const Text('Equipos'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/teams');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.shield),
-              title: const Text('Mi Equipo'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/my-team');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.sports_baseball),
-              title: const Text('Juegos'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/games');
               },
             ),
             ListTile(
               leading: const Icon(Icons.leaderboard),
               title: const Text('Líderes'),
               onTap: () {
-                Navigator.pop(context);
                 Navigator.pushNamed(context, 'lideres');
               },
             ),
@@ -390,8 +365,28 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.bar_chart),
               title: const Text('Gráficos'),
               onTap: () {
-                Navigator.pop(context);
                 Navigator.pushNamed(context, 'graficos');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.group),
+              title: const Text('Equipos'),
+              onTap: () {
+                Navigator.pushNamed(context, '/teams');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.sports_baseball),
+              title: const Text('Mi Equipo'),
+              onTap: () {
+                Navigator.pushNamed(context, '/my-team');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.sports),
+              title: const Text('Juegos'),
+              onTap: () {
+                Navigator.pushNamed(context, '/games');
               },
             ),
             const Divider(),
@@ -399,8 +394,14 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.settings),
               title: const Text('Configuración'),
               onTap: () {
-                Navigator.pop(context);
                 Navigator.pushNamed(context, '/configuration');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text('Acerca de'),
+              onTap: () {
+                Navigator.pushNamed(context, '/about');
               },
             ),
           ],
