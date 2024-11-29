@@ -402,8 +402,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Inicio'),
+              leading: const Icon(Icons.people),
+              title: const Text('Jugadores'),
               onTap: () {
                 Navigator.pushNamed(context, 'home');
               },

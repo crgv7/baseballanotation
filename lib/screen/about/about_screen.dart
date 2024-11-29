@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -66,6 +67,92 @@ class AboutScreen extends StatelessWidget {
                     'Baseball Annotation es una aplicación diseñada para el registro y análisis estadístico de juegos de béisbol, '
                     'permitiendo un seguimiento detallado de equipos y jugadores.',
                     style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Contribuir al Proyecto',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Si deseas apoyar el desarrollo de Baseball Annotation, puedes hacer una contribución a través de:',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.credit_card,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'Número de Tarjeta',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                '9227-9598-7399-6651',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.copy),
+                          onPressed: () {
+                            Clipboard.setData(const ClipboardData(
+                              text: '9227-9598-7399-6651',
+                            )).then((_) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Número de tarjeta copiado al portapapeles'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            });
+                          },
+                          tooltip: 'Copiar número',
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Tu apoyo nos ayuda a seguir mejorando y añadiendo nuevas funcionalidades a la aplicación.',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                 ],
               ),
