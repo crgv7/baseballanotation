@@ -14,18 +14,25 @@ import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:baseballanotation/screen/configuration/configuration_screen.dart';
+import 'package:provider/provider.dart';
+import 'providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // Eliminar la base de datos existente para forzar la actualización
-  final databasePath = join(await getDatabasesPath(), 'baseball_stats.db');
+  String databasePath = join(await getDatabasesPath(), 'baseball_stats.db');
   await deleteDatabase(databasePath);
   
   // Inicializar la base de datos
   await DatabaseServices.instance.getDatabase();
-  
-  runApp(const MyApp());
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -33,23 +40,38 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Baseball Stats',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const MyHomePage(title: 'Baseball Stats'),
-        'home': (context) => const Home(),
-        'calendario': (context) => const EventCalendar(),
-        'lideres': (context) => Lideres(),
-        'graficos': (context) => const Graficos(),
-        '/teams': (context) => const TeamsScreen(),
-        '/my-team': (context) => const MyTeamScreen(),
-        '/games': (context) => const GamesScreen(),
-        '/configuration': (context) => const ConfigurationScreen(),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'Baseball Stats',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.deepPurple,
+              brightness: Brightness.light,
+            ),
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.deepPurple,
+              brightness: Brightness.dark,
+            ),
+            useMaterial3: true,
+          ),
+          themeMode: themeProvider.themeMode,
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const MyHomePage(title: 'Baseball Stats'),
+            'home': (context) => const Home(),
+            'calendario': (context) => const EventCalendar(),
+            'lideres': (context) => Lideres(),
+            'graficos': (context) => const Graficos(),
+            '/teams': (context) => const TeamsScreen(),
+            '/my-team': (context) => const MyTeamScreen(),
+            '/games': (context) => const GamesScreen(),
+            '/configuration': (context) => const ConfigurationScreen(),
+          },
+        );
       },
     );
   }

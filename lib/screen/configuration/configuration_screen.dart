@@ -6,16 +6,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import '../../providers/theme_provider.dart';
 
-class ConfigurationScreen extends StatefulWidget {
-  const ConfigurationScreen({Key? key}) : super(key: key);
-
-  @override
-  State<ConfigurationScreen> createState() => _ConfigurationScreenState();
-}
-
-class _ConfigurationScreenState extends State<ConfigurationScreen> {
-  final DatabaseServices _databaseServices = DatabaseServices.instance;
+class ConfigurationScreen extends StatelessWidget {
+  const ConfigurationScreen({super.key});
 
   Future<String?> _getExportDirectory() async {
     try {
@@ -208,7 +203,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
           String targetPath = join(databasePath, 'baseball_stats.db');
 
           // Cerrar la base de datos actual
-          await _databaseServices.closeDatabase();
+          await DatabaseServices.instance.closeDatabase();
 
           // Copiar el archivo seleccionado
           await File(filePath).copy(targetPath);
@@ -237,55 +232,45 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     }
   }
 
-  Future<void> _resetDatabase(BuildContext context) async {
-    try {
-      bool? confirm = await showDialog<bool>(
-        context: context,
-        builder: (BuildContext dialogContext) {
-          return AlertDialog(
-            title: const Text('Confirmar Reinicio'),
-            content: const Text(
-                '¿Estás seguro que deseas reiniciar la base de datos? Esta acción no se puede deshacer.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Cancelar'),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop(false);
-                },
-              ),
-              TextButton(
-                child: const Text('Reiniciar'),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop(true);
-                },
-              ),
-            ],
-          );
-        },
-      );
-
-      if (confirm == true) {
-        await _databaseServices.resetDatabase();
-
-        if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Base de datos reiniciada exitosamente'),
-            backgroundColor: Colors.green,
-          ),
+  Future<void> _showResetConfirmationDialog(BuildContext context) async {
+    bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Confirmar Reinicio'),
+          content: const Text(
+              '¿Estás seguro que deseas reiniciar la base de datos? Esta acción no se puede deshacer.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(false);
+              },
+            ),
+            TextButton(
+              child: const Text('Reiniciar'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(true);
+              },
+            ),
+          ],
         );
+      },
+    );
 
-        if (!context.mounted) return;
-        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
-      }
-    } catch (e) {
+    if (confirm == true) {
+      await DatabaseServices.instance.resetDatabase();
+
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error al reiniciar la base de datos: $e'),
-          backgroundColor: Colors.red,
+        const SnackBar(
+          content: Text('Base de datos reiniciada exitosamente'),
+          backgroundColor: Colors.green,
         ),
       );
+
+      if (!context.mounted) return;
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
     }
   }
 
@@ -295,52 +280,62 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
       appBar: AppBar(
         title: const Text('Configuración'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Administración de Datos',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+      body: ListView(
+        children: [
+          // Sección de Tema
+          Card(
+            margin: const EdgeInsets.all(8.0),
+            child: Consumer<ThemeProvider>(
+              builder: (context, themeProvider, child) {
+                return SwitchListTile(
+                  title: const Text('Tema Oscuro'),
+                  subtitle: Text(themeProvider.isDarkMode ? 'Activado' : 'Desactivado'),
+                  value: themeProvider.isDarkMode,
+                  onChanged: (bool value) {
+                    themeProvider.toggleTheme();
+                  },
+                );
+              },
             ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () => _exportDatabase(context),
-              icon: const Icon(Icons.upload),
-              label: const Text('Exportar Base de Datos'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-              ),
+          ),
+          // Sección de Base de Datos
+          Card(
+            margin: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Base de Datos',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.backup),
+                  title: const Text('Exportar Base de Datos'),
+                  subtitle: const Text('Crear una copia de seguridad'),
+                  onTap: () => _exportDatabase(context),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.restore),
+                  title: const Text('Importar Base de Datos'),
+                  subtitle: const Text('Restaurar desde copia de seguridad'),
+                  onTap: () => _importDatabase(context),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete_forever),
+                  title: const Text('Restablecer Base de Datos'),
+                  subtitle: const Text('Eliminar todos los datos'),
+                  onTap: () => _showResetConfirmationDialog(context),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              onPressed: () => _importDatabase(context),
-              icon: const Icon(Icons.download),
-              label: const Text('Importar Base de Datos'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Divider(),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () => _resetDatabase(context),
-              icon: const Icon(Icons.restore),
-              label: const Text('Reiniciar Base de Datos'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
