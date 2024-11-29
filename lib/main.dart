@@ -46,18 +46,80 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Baseball Stats',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.deepPurple,
-              brightness: Brightness.light,
-            ),
             useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF1565C0), // Azul principal
+              brightness: Brightness.light,
+            ).copyWith(
+              primary: const Color(0xFF1565C0),
+              secondary: const Color(0xFF2196F3),
+              tertiary: const Color(0xFF64B5F6),
+              background: Colors.white,
+              surface: Colors.white,
+            ),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Color(0xFF1565C0),
+              foregroundColor: Colors.white,
+              elevation: 2,
+            ),
+            drawerTheme: const DrawerThemeData(
+              backgroundColor: Colors.white,
+            ),
+            cardTheme: CardTheme(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1565C0),
+                foregroundColor: Colors.white,
+                elevation: 2,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
           ),
           darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.deepPurple,
-              brightness: Brightness.dark,
-            ),
             useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF1565C0), // Azul principal
+              brightness: Brightness.dark,
+            ).copyWith(
+              primary: const Color(0xFF1565C0),
+              secondary: const Color(0xFF2196F3),
+              tertiary: const Color(0xFF64B5F6),
+              background: const Color(0xFF121212),
+              surface: const Color(0xFF1E1E1E),
+            ),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Color(0xFF1565C0),
+              foregroundColor: Colors.white,
+              elevation: 2,
+            ),
+            drawerTheme: const DrawerThemeData(
+              backgroundColor: Color(0xFF1E1E1E),
+            ),
+            cardTheme: CardTheme(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1565C0),
+                foregroundColor: Colors.white,
+                elevation: 2,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
           ),
           themeMode: themeProvider.themeMode,
           initialRoute: '/',
@@ -315,7 +377,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: ListView(
@@ -328,11 +389,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Theme.of(context).colorScheme.primary,
               ),
-              child: Text(
+              child: const Text(
                 'Baseball Stats',
                 style: TextStyle(
                   color: Colors.white,
