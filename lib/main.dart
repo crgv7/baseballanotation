@@ -445,7 +445,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ListTile(
               leading: const Icon(Icons.sports),
-              title: const Text('Juegos'),
+              title: const Text('Partidos'),
               onTap: () {
                 Navigator.pushNamed(context, '/games');
               },

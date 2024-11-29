@@ -117,31 +117,31 @@ class _HomeState extends State<Home> {
         const SizedBox(height: 8),
         TextField(
           controller: _atBatsController,
-          decoration: const InputDecoration(labelText: 'At Bats'),
+          decoration: const InputDecoration(labelText: 'Turnos al bate'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
         TextField(
           controller: _homeRunsController,
-          decoration: const InputDecoration(labelText: 'Home Runs'),
+          decoration: const InputDecoration(labelText: 'Jonrones'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
         TextField(
           controller: _rbiController,
-          decoration: const InputDecoration(labelText: 'RBI'),
+          decoration: const InputDecoration(labelText: 'Carreras impulsadas'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
         TextField(
           controller: _runsController,
-          decoration: const InputDecoration(labelText: 'Runs'),
+          decoration: const InputDecoration(labelText: 'Carreras anotadas'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
         TextField(
           controller: _stolenBasesController,
-          decoration: const InputDecoration(labelText: 'Stolen Bases'),
+          decoration: const InputDecoration(labelText: 'Bases robadas'),
           keyboardType: TextInputType.number,
         ),
       ],
@@ -153,13 +153,13 @@ class _HomeState extends State<Home> {
       children: [
         TextField(
           controller: _winsController,
-          decoration: const InputDecoration(labelText: 'Wins'),
+          decoration: const InputDecoration(labelText: 'Victorias'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
         TextField(
           controller: _lossesController,
-          decoration: const InputDecoration(labelText: 'Losses'),
+          decoration: const InputDecoration(labelText: 'Derrotas'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
@@ -171,25 +171,25 @@ class _HomeState extends State<Home> {
         const SizedBox(height: 8),
         TextField(
           controller: _strikeoutsController,
-          decoration: const InputDecoration(labelText: 'Strikeouts'),
+          decoration: const InputDecoration(labelText: 'Ponches'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
         TextField(
           controller: _walksController,
-          decoration: const InputDecoration(labelText: 'Walks'),
+          decoration: const InputDecoration(labelText: 'Bases por bolas'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
         TextField(
           controller: _inningsPitchedController,
-          decoration: const InputDecoration(labelText: 'Innings Pitched'),
+          decoration: const InputDecoration(labelText: 'Innings lanzados'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
         TextField(
           controller: _savesController,
-          decoration: const InputDecoration(labelText: 'Saves'),
+          decoration: const InputDecoration(labelText: 'Salvados'),
           keyboardType: TextInputType.number,
         ),
       ],
@@ -200,7 +200,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Baseball Stats'),
+        title: const Text('Jugadores'),
       ),
       body: _playerList(),
       floatingActionButton: FloatingActionButton(
@@ -209,7 +209,7 @@ class _HomeState extends State<Home> {
             context: context,
             builder: (_) => StatefulBuilder(
               builder: (context, setState) => AlertDialog(
-                title: const Text('Add Player'),
+                title: const Text('Agregar jugador'),
                 content: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -217,12 +217,12 @@ class _HomeState extends State<Home> {
                       TextField(
                         controller: _nameController,
                         decoration: const InputDecoration(
-                          labelText: 'Player Name',
+                          labelText: 'Nombre del jugador',
                         ),
                       ),
                       const SizedBox(height: 8),
                       SwitchListTile(
-                        title: const Text('Is Pitcher?'),
+                        title: const Text('¿Es lanzador?'),
                         value: _isPitcher,
                         onChanged: (bool value) {
                           setState(() {
@@ -241,7 +241,7 @@ class _HomeState extends State<Home> {
                       Navigator.pop(context);
                       _clearControllers();
                     },
-                    child: const Text('Cancel'),
+                    child: const Text('Cancelar'),
                   ),
                   TextButton(
                     onPressed: () async {
@@ -276,12 +276,12 @@ class _HomeState extends State<Home> {
                           _refreshPlayers();
                         }
                       } catch (e) {
-                        print('Error adding player: $e');
+                        print('Error agregando jugador: $e');
                       } finally {
                         _clearControllers();
                       }
                     },
-                    child: const Text('Add'),
+                    child: const Text('Agregar'),
                   ),
                 ],
               ),
@@ -306,7 +306,7 @@ class _HomeState extends State<Home> {
                 title: Text(player.name),
                 subtitle: Text(
                   player.isPitcher
-                      ? 'W-L: ${player.wins ?? 0}-${player.losses ?? 0}, ERA: ${player.era?.toStringAsFixed(2) ?? "0.00"}'
+                      ? 'V-D: ${player.wins ?? 0}-${player.losses ?? 0}, ERA: ${player.era?.toStringAsFixed(2) ?? "0.00"}'
                       : 'AVG: ${(player.average ?? 0).toStringAsFixed(3)}, HR: ${player.homeRuns ?? 0}, RBI: ${player.rbi ?? 0}',
                 ),
                 trailing: IconButton(
@@ -342,7 +342,7 @@ class _HomeState extends State<Home> {
                     context: context,
                     builder: (_) => StatefulBuilder(
                       builder: (dialogContext, setDialogState) => AlertDialog(
-                        title: const Text('Edit Player'),
+                        title: const Text('Editar jugador'),
                         content: SingleChildScrollView(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -350,12 +350,12 @@ class _HomeState extends State<Home> {
                               TextField(
                                 controller: _nameController,
                                 decoration: const InputDecoration(
-                                  labelText: 'Player Name',
+                                  labelText: 'Nombre del jugador',
                                 ),
                               ),
                               const SizedBox(height: 8),
                               SwitchListTile(
-                                title: const Text('Is Pitcher?'),
+                                title: const Text('¿Es lanzador?'),
                                 value: _isPitcher,
                                 onChanged: (bool value) {
                                   setDialogState(() {
@@ -374,7 +374,7 @@ class _HomeState extends State<Home> {
                               Navigator.of(dialogContext).pop();
                               _clearControllers();
                             },
-                            child: const Text('Cancel'),
+                            child: const Text('Cancelar'),
                           ),
                           TextButton(
                             onPressed: () async {
@@ -410,12 +410,12 @@ class _HomeState extends State<Home> {
                                   _refreshPlayers();
                                 }
                               } catch (e) {
-                                print('Error updating player: $e');
+                                print('Error actualizando jugador: $e');
                               } finally {
                                 _clearControllers();
                               }
                             },
-                            child: const Text('Update'),
+                            child: const Text('Actualizar'),
                           ),
                         ],
                       ),

@@ -146,7 +146,7 @@ class _GamesScreenState extends State<GamesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Juegos'),
+        title: const Text('Calendario de Juegos'),
         actions: [
           if (!_showForm)
             IconButton(
@@ -222,7 +222,32 @@ class _GamesScreenState extends State<GamesScreen> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete),
-                          onPressed: () => _deleteGame(game),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Confirmar Eliminación'),
+                                  content: const Text('¿Estás seguro de que deseas eliminar este juego?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancelar'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        _deleteGame(game);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Eliminar'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
                         ),
                       ],
                     ),
