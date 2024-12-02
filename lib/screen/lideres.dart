@@ -89,8 +89,7 @@ class _LideresState extends State<Lideres> {
                                   title: Text("RBI"),
                                   onChanged: (value) {
                                     setState(() {
-                                      _selectedOption =
-                                          value! ? "RBI" : null;
+                                      _selectedOption = value! ? "RBI" : null;
                                     });
                                     if (value!) {
                                       this.setState(() {
@@ -101,117 +100,113 @@ class _LideresState extends State<Lideres> {
                                     }
                                   }),
                               CheckboxListTile(
-                                value: _selectedOption == "Wins",
-                                title: Text("Wins"),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedOption = value! ? "Wins" : null;
-                                  });
-                                  if (value!) {
-                                    this.setState(() {
-                                      _playersFuture = DatabaseServices
-                                          .instance
-                                          .getPlayersByWins();
+                                  value: _selectedOption == "Wins",
+                                  title: Text("Wins"),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedOption = value! ? "Wins" : null;
                                     });
-                                  }
-                                }
-                              ),
+                                    if (value!) {
+                                      this.setState(() {
+                                        _playersFuture = DatabaseServices
+                                            .instance
+                                            .getPlayersByWins();
+                                      });
+                                    }
+                                  }),
                               CheckboxListTile(
-                                value: _selectedOption == "Losses",
-                                title: Text("Losses"),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedOption = value! ? "Losses" : null;
-                                  });
-                                  if (value!) {
-                                    this.setState(() {
-                                      _playersFuture = DatabaseServices
-                                          .instance
-                                          .getPlayersByLosses();
+                                  value: _selectedOption == "Losses",
+                                  title: Text("Losses"),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedOption =
+                                          value! ? "Losses" : null;
                                     });
-                                  }
-                                }
-                              ),
+                                    if (value!) {
+                                      this.setState(() {
+                                        _playersFuture = DatabaseServices
+                                            .instance
+                                            .getPlayersByLosses();
+                                      });
+                                    }
+                                  }),
                               CheckboxListTile(
-                                value: _selectedOption == "ERA",
-                                title: Text("ERA"),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedOption = value! ? "ERA" : null;
-                                  });
-                                  if (value!) {
-                                    this.setState(() {
-                                      _playersFuture = DatabaseServices
-                                          .instance
-                                          .getPlayersByEra();
+                                  value: _selectedOption == "ERA",
+                                  title: Text("ERA"),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedOption = value! ? "ERA" : null;
                                     });
-                                  }
-                                }
-                              ),
+                                    if (value!) {
+                                      this.setState(() {
+                                        _playersFuture = DatabaseServices
+                                            .instance
+                                            .getPlayersByEra();
+                                      });
+                                    }
+                                  }),
                               CheckboxListTile(
-                                value: _selectedOption == "Strikeouts",
-                                title: Text("Strikeouts"),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedOption = value! ? "Strikeouts" : null;
-                                  });
-                                  if (value!) {
-                                    this.setState(() {
-                                      _playersFuture = DatabaseServices
-                                          .instance
-                                          .getPlayersByStrikeouts();
+                                  value: _selectedOption == "Strikeouts",
+                                  title: Text("Strikeouts"),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedOption =
+                                          value! ? "Strikeouts" : null;
                                     });
-                                  }
-                                }
-                              ),
+                                    if (value!) {
+                                      this.setState(() {
+                                        _playersFuture = DatabaseServices
+                                            .instance
+                                            .getPlayersByStrikeouts();
+                                      });
+                                    }
+                                  }),
                               CheckboxListTile(
-                                value: _selectedOption == "Walks",
-                                title: Text("Walks"),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedOption = value! ? "Walks" : null;
-                                  });
-                                  if (value!) {
-                                    this.setState(() {
-                                      _playersFuture = DatabaseServices
-                                          .instance
-                                          .getPlayersByWalks();
+                                  value: _selectedOption == "Walks",
+                                  title: Text("Walks"),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedOption = value! ? "Walks" : null;
                                     });
-                                  }
-                                }
-                              ),
+                                    if (value!) {
+                                      this.setState(() {
+                                        _playersFuture = DatabaseServices
+                                            .instance
+                                            .getPlayersByWalks();
+                                      });
+                                    }
+                                  }),
                               CheckboxListTile(
-                                value: _selectedOption == "InningsPitched",
-                                title: Text("Innings Pitched"),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedOption = value! ? "InningsPitched" : null;
-                                  });
-                                  if (value!) {
-                                    this.setState(() {
-                                      _playersFuture = DatabaseServices
-                                          .instance
-                                          .getPlayersByInningsPitched();
+                                  value: _selectedOption == "InningsPitched",
+                                  title: Text("Innings Pitched"),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedOption =
+                                          value! ? "InningsPitched" : null;
                                     });
-                                  }
-                                }
-                              ),
+                                    if (value!) {
+                                      this.setState(() {
+                                        _playersFuture = DatabaseServices
+                                            .instance
+                                            .getPlayersByInningsPitched();
+                                      });
+                                    }
+                                  }),
                               CheckboxListTile(
-                                value: _selectedOption == "Saves",
-                                title: Text("Saves"),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedOption = value! ? "Saves" : null;
-                                  });
-                                  if (value!) {
-                                    this.setState(() {
-                                      _playersFuture = DatabaseServices
-                                          .instance
-                                          .getPlayersBySaves();
+                                  value: _selectedOption == "Saves",
+                                  title: Text("Saves"),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedOption = value! ? "Saves" : null;
                                     });
-                                  }
-                                }
-                              ),
+                                    if (value!) {
+                                      this.setState(() {
+                                        _playersFuture = DatabaseServices
+                                            .instance
+                                            .getPlayersBySaves();
+                                      });
+                                    }
+                                  }),
                             ],
                           ),
                         ),
@@ -223,7 +218,7 @@ class _LideresState extends State<Lideres> {
                               child: Text("Cancelar")),
                           TextButton(
                               onPressed: () {
-                                Navigator.pop(context);
+                                Navigator.pop(context);r
                               },
                               child: Text("Aceptar")),
                         ],
@@ -239,34 +234,143 @@ class _LideresState extends State<Lideres> {
       future: _playersFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (snapshot.hasData) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final player = snapshot.data![index];
-              return ListTile(
-                title: Text(player.name),
-                subtitle: Text(
-                  _selectedOption == "Home Runs" ? "HR: ${player.homeRuns}" :
-                  _selectedOption == "Hits" ? "H: ${player.hits}" :
-                  _selectedOption == "At Bats" ? "AB: ${player.atBats}" :
-                  _selectedOption == "RBI" ? "RBI: ${player.rbi}" :
-                  _selectedOption == "Wins" ? "W: ${player.wins}" :
-                  _selectedOption == "Losses" ? "L: ${player.losses}" :
-                  _selectedOption == "ERA" ? "ERA: ${player.era}" :
-                  _selectedOption == "Strikeouts" ? "K: ${player.strikeouts}" :
-                  _selectedOption == "Walks" ? "BB: ${player.walks}" :
-                  _selectedOption == "InningsPitched" ? "IP: ${player.inningsPitched}" :
-                  _selectedOption == "Saves" ? "SV: ${player.saves}" : ""
+              String statValue = '';
+              String statLabel = '';
+
+              // Determinar qué estadística mostrar basado en la selección
+              switch (_selectedOption) {
+                case "Home Runs":
+                  statValue = "${player.homeRuns ?? 0}";
+                  statLabel = "HR";
+                  break;
+                case "Hits":
+                  statValue = "${player.hits ?? 0}";
+                  statLabel = "H";
+                  break;
+                case "At Bats":
+                  statValue = "${player.atBats ?? 0}";
+                  statLabel = "AB";
+                  break;
+                case "RBI":
+                  statValue = "${player.rbi ?? 0}";
+                  statLabel = "RBI";
+                  break;
+                case "Wins":
+                  statValue = "${player.wins ?? 0}";
+                  statLabel = "W";
+                  break;
+                case "Losses":
+                  statValue = "${player.losses ?? 0}";
+                  statLabel = "L";
+                  break;
+                case "ERA":
+                  statValue = "${player.era?.toStringAsFixed(2) ?? "0.00"}";
+                  statLabel = "ERA";
+                  break;
+                case "Strikeouts":
+                  statValue = "${player.strikeouts ?? 0}";
+                  statLabel = "K";
+                  break;
+                case "Walks":
+                  statValue = "${player.walks ?? 0}";
+                  statLabel = "BB";
+                  break;
+                case "InningsPitched":
+                  statValue = "${player.inningsPitched ?? 0}";
+                  statLabel = "IP";
+                  break;
+                case "Saves":
+                  statValue = "${player.saves ?? 0}";
+                  statLabel = "SV";
+                  break;
+                default:
+                  statValue = "${player.homeRuns ?? 0}";
+                  statLabel = "HR";
+              }
+
+              return Card(
+                elevation: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                        Theme.of(context).colorScheme.primary,
+                      ],
+                    ),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 10.0),
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Text(
+                        '${index + 1}',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      player.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            statValue,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            statLabel,
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.7),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               );
             },
           );
         } else {
-          return Text('No data available');
+          return const Center(child: Text('No hay datos disponibles'));
         }
       },
     );

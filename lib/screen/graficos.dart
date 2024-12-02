@@ -36,6 +36,8 @@ class _GraficosState extends State<Graficos> {
         appBar: AppBar(
           title: const Text('Estadísticas'),
           bottom: const TabBar(
+            labelColor: Colors.white, // Color del texto seleccionado
+            unselectedLabelColor: Colors.white70, // Color del texto no seleccionado
             tabs: [
               Tab(text: 'Bateadores'),
               Tab(text: 'Pitchers'),
