@@ -117,28 +117,124 @@ class EventCalendarState extends State<EventCalendar> {
   }
 
   Future<void> _saveEvent(Meeting meeting) async {
-    final event = Event(
-      id: meeting.id,
-      eventName: meeting.eventName,
-      from: meeting.from,
-      to: meeting.to,
-      notes: meeting.notes,
-      isAllDay: meeting.isAllDay,
-      colorIndex: _colorCollection.indexOf(meeting.background),
-    );
+    try {
+      print('Preparando evento para guardar: ${meeting.eventName}');
+      final event = Event(
+        id: meeting.id,
+        eventName: meeting.eventName,
+        from: meeting.from,
+        to: meeting.to,
+        notes: meeting.notes,
+        isAllDay: meeting.isAllDay,
+        colorIndex: _colorCollection.indexOf(meeting.background),
+      );
 
-    if (event.id == null) {
-      await databaseServices.addEvent(event);
-    } else {
-      await databaseServices.updateEvent(event);
+      print('Guardando evento en la base de datos...');
+      if (event.id == null) {
+        print('Creando nuevo evento');
+        final id = await databaseServices.addEvent(event);
+        print('Nuevo evento creado con ID: $id');
+      } else {
+        print('Actualizando evento existente');
+        await databaseServices.updateEvent(event);
+        print('Evento actualizado exitosamente');
+      }
+
+      print('Recargando eventos...');
+      await _loadEvents();
+      print('Eventos recargados exitosamente');
+    } catch (e) {
+      print('Error al guardar evento: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al guardar el evento: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
-    _loadEvents();
   }
 
   Future<void> _deleteEvent(Meeting meeting) async {
-    if (meeting.id != null) {
-      await databaseServices.deleteEvent(meeting.id!);
-      _loadEvents();
+    try {
+      print('🔍 INICIO Proceso de eliminación de evento');
+      print('🔑 ID del evento: ${meeting.id}');
+      
+      if (meeting.id == null) {
+        print('❌ ERROR: El ID del evento es NULL');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No se puede eliminar un evento sin ID'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+
+      // Log detalles del evento antes de borrar
+      print('📋 Detalles del evento:');
+      print('   Nombre: ${meeting.eventName}');
+      print('   Fecha inicio: ${meeting.from}');
+      print('   Fecha fin: ${meeting.to}');
+
+      // Imprimir todos los eventos actuales antes de borrar
+      print('📊 Estado de eventos ANTES del borrado:');
+      for (var event in appointments) {
+        print('   ID: ${event.id}, Nombre: ${event.eventName}');
+      }
+
+      // Intentar borrar el evento
+      final bool success = await databaseServices.deleteEvent(meeting.id!);
+      
+      print('✅ Resultado de borrado en base de datos: $success');
+
+      if (success) {
+        // Recargar eventos después del borrado
+        await _loadEvents();
+
+        // Imprimir eventos después de recargar
+        print('📊 Estado de eventos DESPUÉS del borrado:');
+        for (var event in appointments) {
+          print('   ID: ${event.id}, Nombre: ${event.eventName}');
+        }
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Evento eliminado exitosamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        print('❌ No se pudo borrar el evento de la base de datos');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No se pudo eliminar el evento'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+
+      print('🔚 FIN Proceso de eliminación de evento');
+    } catch (e, stackTrace) {
+      print('❌ ERROR CRÍTICO al eliminar evento:');
+      print('Excepción: $e');
+      print('Stack trace: $stackTrace');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error crítico al eliminar el evento: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

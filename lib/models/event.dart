@@ -21,8 +21,8 @@ class Event {
     return {
       'id': id,
       'eventName': eventName,
-      'from': from.toIso8601String(),
-      'to': to.toIso8601String(),
+      'fromDate': from.toIso8601String(),
+      'toDate': to.toIso8601String(),
       'notes': notes,
       'isAllDay': isAllDay ? 1 : 0,
       'colorIndex': colorIndex,
@@ -33,8 +33,8 @@ class Event {
     return Event(
       id: map['id'],
       eventName: map['eventName'],
-      from: DateTime.parse(map['from']),
-      to: DateTime.parse(map['to']),
+      from: DateTime.parse(map['fromDate']),
+      to: DateTime.parse(map['toDate']),
       notes: map['notes'],
       isAllDay: map['isAllDay'] == 1,
       colorIndex: map['colorIndex'],

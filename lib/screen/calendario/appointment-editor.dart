@@ -430,14 +430,30 @@ class AppointmentEditorState extends State<AppointmentEditor> {
             floatingActionButton: _selectedAppointment == null
                 ? const Text('')
                 : FloatingActionButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_selectedAppointment != null) {
-                        _events.appointments!.removeAt(_events.appointments!
-                            .indexOf(_selectedAppointment));
-                        _events.notifyListeners(CalendarDataSourceAction.remove,
-                            <Meeting>[]..add(_selectedAppointment!));
-                        _selectedAppointment = null;
-                        Navigator.pop(context);
+                        // Eliminar de la base de datos
+                        final success = await DatabaseServices.instance
+                            .deleteEvent(_selectedAppointment!.id!);
+                        if (success) {
+                          // Solo eliminar de la lista local si se eliminó correctamente de la base de datos
+                          _events.appointments!.removeAt(_events.appointments!
+                              .indexOf(_selectedAppointment));
+                          _events.notifyListeners(
+                              CalendarDataSourceAction.remove,
+                              <Meeting>[_selectedAppointment!]);
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text('Evento eliminado correctamente')),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Error al eliminar el evento')),
+                          );
+                        }
                       }
                     },
                     child:

@@ -21,12 +21,13 @@ import 'package:baseballanotation/screen/about/about_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Eliminar la base de datos existente para forzar la actualización
-  String databasePath = join(await getDatabasesPath(), 'baseball_stats.db');
-  await deleteDatabase(databasePath);
-  
-  // Inicializar la base de datos
-  await DatabaseServices.instance.getDatabase();
+  try {
+    // Inicializar la base de datos y esperar a que esté lista
+    final db = await DatabaseServices.instance.database;
+    print('Database initialized successfully at: ${db.path}');
+  } catch (e) {
+    print('Error initializing database: $e');
+  }
 
   runApp(
     ChangeNotifierProvider(
