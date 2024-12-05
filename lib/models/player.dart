@@ -11,6 +11,9 @@ class Player {
   final int? rbi;
   final int? runs;
   final int? stolenBases;
+  final int? hbp;  // Hit By Pitch
+  final int? sf;   // Sacrifice Fly
+  final int? bb;   // Base on Balls (Walks)
   final double? obp; // On-base percentage
   final double? slg; // Slugging percentage
   
@@ -35,6 +38,9 @@ class Player {
     this.rbi,
     this.runs,
     this.stolenBases,
+    this.hbp,
+    this.sf,
+    this.bb,
     this.obp,
     this.slg,
     this.wins,
@@ -59,6 +65,9 @@ class Player {
       rbi: map['rbi'] as int?,
       runs: map['runs'] as int?,
       stolenBases: map['stolen_bases'] as int?,
+      hbp: map['hbp'] as int?,
+      sf: map['sf'] as int?,
+      bb: map['bb'] as int?,
       obp: map['obp'] as double?,
       slg: map['slg'] as double?,
       wins: map['wins'] as int?,
@@ -84,6 +93,9 @@ class Player {
       'rbi': rbi,
       'runs': runs,
       'stolen_bases': stolenBases,
+      'hbp': hbp,
+      'sf': sf,
+      'bb': bb,
       'obp': obp,
       'slg': slg,
       'wins': wins,
@@ -108,6 +120,9 @@ class Player {
     int? rbi,
     int? runs,
     int? stolenBases,
+    int? hbp,
+    int? sf,
+    int? bb,
     double? obp,
     double? slg,
     int? wins,
@@ -130,6 +145,9 @@ class Player {
       rbi: rbi ?? this.rbi,
       runs: runs ?? this.runs,
       stolenBases: stolenBases ?? this.stolenBases,
+      hbp: hbp ?? this.hbp,
+      sf: sf ?? this.sf,
+      bb: bb ?? this.bb,
       obp: obp ?? this.obp,
       slg: slg ?? this.slg,
       wins: wins ?? this.wins,

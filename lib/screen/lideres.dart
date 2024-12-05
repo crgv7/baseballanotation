@@ -218,7 +218,7 @@ class _LideresState extends State<Lideres> {
                               child: Text("Cancelar")),
                           TextButton(
                               onPressed: () {
-                                Navigator.pop(context);r
+                                Navigator.pop(context);
                               },
                               child: Text("Aceptar")),
                         ],
@@ -243,58 +243,60 @@ class _LideresState extends State<Lideres> {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final player = snapshot.data![index];
-              String statValue = '';
-              String statLabel = '';
+              String statValue = ''; // El valor de la estadística a mostrar
+              String statLabel = ''; // La etiqueta para mostrar la estadística
 
               // Determinar qué estadística mostrar basado en la selección
+              // _selectedOption es la opción seleccionada por el usuario en el
+              // diálogo de selección de estadísticas
               switch (_selectedOption) {
                 case "Home Runs":
-                  statValue = "${player.homeRuns ?? 0}";
-                  statLabel = "HR";
+                  statValue = "${player.homeRuns ?? 0}"; // Mostrar el número de Home Runs
+                  statLabel = "HR"; // La etiqueta es "HR"
                   break;
                 case "Hits":
-                  statValue = "${player.hits ?? 0}";
-                  statLabel = "H";
+                  statValue = "${player.hits ?? 0}"; // Mostrar el número de Hits
+                  statLabel = "H"; // La etiqueta es "H"
                   break;
                 case "At Bats":
-                  statValue = "${player.atBats ?? 0}";
-                  statLabel = "AB";
+                  statValue = "${player.atBats ?? 0}"; // Mostrar el número de At Bats
+                  statLabel = "AB"; // La etiqueta es "AB"
                   break;
                 case "RBI":
-                  statValue = "${player.rbi ?? 0}";
-                  statLabel = "RBI";
+                  statValue = "${player.rbi ?? 0}"; // Mostrar el número de RBI
+                  statLabel = "RBI"; // La etiqueta es "RBI"
                   break;
                 case "Wins":
-                  statValue = "${player.wins ?? 0}";
-                  statLabel = "W";
+                  statValue = "${player.wins ?? 0}"; // Mostrar el número de Wins
+                  statLabel = "W"; // La etiqueta es "W"
                   break;
                 case "Losses":
-                  statValue = "${player.losses ?? 0}";
-                  statLabel = "L";
+                  statValue = "${player.losses ?? 0}"; // Mostrar el número de Losses
+                  statLabel = "L"; // La etiqueta es "L"
                   break;
                 case "ERA":
-                  statValue = "${player.era?.toStringAsFixed(2) ?? "0.00"}";
-                  statLabel = "ERA";
+                  statValue = "${player.era?.toStringAsFixed(2) ?? "0.00"}"; // Mostrar el ERA con 2 decimales
+                  statLabel = "ERA"; // La etiqueta es "ERA"
                   break;
                 case "Strikeouts":
-                  statValue = "${player.strikeouts ?? 0}";
-                  statLabel = "K";
+                  statValue = "${player.strikeouts ?? 0}"; // Mostrar el número de Strikeouts
+                  statLabel = "K"; // La etiqueta es "K"
                   break;
                 case "Walks":
-                  statValue = "${player.walks ?? 0}";
-                  statLabel = "BB";
+                  statValue = "${player.walks ?? 0}"; // Mostrar el número de Walks
+                  statLabel = "BB"; // La etiqueta es "BB"
                   break;
                 case "InningsPitched":
-                  statValue = "${player.inningsPitched ?? 0}";
-                  statLabel = "IP";
+                  statValue = "${player.inningsPitched ?? 0}"; // Mostrar el número de Innings Pitched
+                  statLabel = "IP"; // La etiqueta es "IP"
                   break;
                 case "Saves":
-                  statValue = "${player.saves ?? 0}";
-                  statLabel = "SV";
+                  statValue = "${player.saves ?? 0}"; // Mostrar el número de Saves
+                  statLabel = "SV"; // La etiqueta es "SV"
                   break;
                 default:
-                  statValue = "${player.homeRuns ?? 0}";
-                  statLabel = "HR";
+                  statValue = "${player.homeRuns ?? 0}"; // Por defecto, mostrar el número de Home Runs
+                  statLabel = "HR"; // La etiqueta es "HR"
               }
 
               return Card(

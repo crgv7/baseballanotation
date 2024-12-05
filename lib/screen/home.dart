@@ -24,6 +24,9 @@ class _HomeState extends State<Home> {
   final TextEditingController _rbiController = TextEditingController();
   final TextEditingController _runsController = TextEditingController();
   final TextEditingController _stolenBasesController = TextEditingController();
+  final TextEditingController _hbpController = TextEditingController();
+  final TextEditingController _sfController = TextEditingController();
+  final TextEditingController _bbController = TextEditingController();
 
   // Pitching stats controllers
   final TextEditingController _winsController = TextEditingController();
@@ -56,6 +59,9 @@ class _HomeState extends State<Home> {
     _rbiController.dispose();
     _runsController.dispose();
     _stolenBasesController.dispose();
+    _hbpController.dispose();
+    _sfController.dispose();
+    _bbController.dispose();
     // Pitching controllers
     _winsController.dispose();
     _lossesController.dispose();
@@ -76,6 +82,9 @@ class _HomeState extends State<Home> {
     _rbiController.clear();
     _runsController.clear();
     _stolenBasesController.clear();
+    _hbpController.clear();
+    _sfController.clear();
+    _bbController.clear();
     // Clear pitching stats
     _winsController.clear();
     _lossesController.clear();
@@ -142,6 +151,24 @@ class _HomeState extends State<Home> {
         TextField(
           controller: _stolenBasesController,
           decoration: const InputDecoration(labelText: 'Bases robadas'),
+          keyboardType: TextInputType.number,
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _hbpController,
+          decoration: const InputDecoration(labelText: 'Golpeado por lanzamiento (HBP)'),
+          keyboardType: TextInputType.number,
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _sfController,
+          decoration: const InputDecoration(labelText: 'Elevado de sacrificio (SF)'),
+          keyboardType: TextInputType.number,
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _bbController,
+          decoration: const InputDecoration(labelText: 'Base por bolas (BB)'),
           keyboardType: TextInputType.number,
         ),
       ],
@@ -257,6 +284,9 @@ class _HomeState extends State<Home> {
                         rbi: int.tryParse(_rbiController.text),
                         runs: int.tryParse(_runsController.text),
                         stolenBases: int.tryParse(_stolenBasesController.text),
+                        hbp: int.tryParse(_hbpController.text),
+                        sf: int.tryParse(_sfController.text),
+                        bb: int.tryParse(_bbController.text),
                         average: _calculateAverage(),
                         // Pitching stats
                         wins: int.tryParse(_winsController.text),
@@ -336,6 +366,9 @@ class _HomeState extends State<Home> {
                     _rbiController.text = player.rbi?.toString() ?? '';
                     _runsController.text = player.runs?.toString() ?? '';
                     _stolenBasesController.text = player.stolenBases?.toString() ?? '';
+                    _hbpController.text = player.hbp?.toString() ?? '';
+                    _sfController.text = player.sf?.toString() ?? '';
+                    _bbController.text = player.bb?.toString() ?? '';
                   }
                   
                   showDialog(
@@ -391,6 +424,9 @@ class _HomeState extends State<Home> {
                                 rbi: int.tryParse(_rbiController.text),
                                 runs: int.tryParse(_runsController.text),
                                 stolenBases: int.tryParse(_stolenBasesController.text),
+                                hbp: int.tryParse(_hbpController.text),
+                                sf: int.tryParse(_sfController.text),
+                                bb: int.tryParse(_bbController.text),
                                 average: _calculateAverage(),
                                 // Pitching stats
                                 wins: int.tryParse(_winsController.text),

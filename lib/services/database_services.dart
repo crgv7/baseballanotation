@@ -27,6 +27,9 @@ class DatabaseServices {
   final String columnRbi = 'rbi';
   final String columnRuns = 'runs';
   final String columnStolenBases = 'stolen_bases';
+  final String columnHbp = 'hbp';
+  final String columnSf = 'sf';
+  final String columnBb = 'bb';
   final String columnObp = 'obp';
   final String columnSlg = 'slg';
   final String columnWins = 'wins';
@@ -62,7 +65,7 @@ class DatabaseServices {
 
     return await openDatabase(
       databasePath,
-      version: 5,
+      version: 6,
       onCreate: (db, version) async {
         print('Creating new database...');
         await _createTables(db);
@@ -76,7 +79,21 @@ class DatabaseServices {
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         print('Upgrading database from version $oldVersion to $newVersion');
-        await _createTables(db); // Ensure all tables exist
+        
+        // Migración para agregar las nuevas columnas
+        if (oldVersion < 6) {
+          await db.execute('''
+            ALTER TABLE $tableName ADD COLUMN $columnHbp INTEGER;
+          ''');
+          await db.execute('''
+            ALTER TABLE $tableName ADD COLUMN $columnSf INTEGER;
+          ''');
+          await db.execute('''
+            ALTER TABLE $tableName ADD COLUMN $columnBb INTEGER;
+          ''');
+        }
+        
+        await _createTables(db); // Aseguramos que todas las tablas existan
       },
     );
   }
@@ -97,6 +114,9 @@ class DatabaseServices {
             $columnRbi INTEGER,
             $columnRuns INTEGER,
             $columnStolenBases INTEGER,
+            $columnHbp INTEGER,
+            $columnSf INTEGER,
+            $columnBb INTEGER,
             $columnObp REAL,
             $columnSlg REAL,
             $columnWins INTEGER,
