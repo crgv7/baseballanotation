@@ -107,6 +107,37 @@ class _HomeState extends State<Home> {
     return null;
   }
 
+  double? _calculateObp() {
+    final hits = int.tryParse(_hitsController.text);
+    final bb = int.tryParse(_bbController.text);
+    final hbp = int.tryParse(_hbpController.text);
+    final atBats = int.tryParse(_atBatsController.text);
+    final sf = int.tryParse(_sfController.text);
+
+    if (hits != null && bb != null && hbp != null && atBats != null && sf != null) {
+      final numerator = hits + bb + hbp;
+      final denominator = atBats + bb + hbp + sf;
+      if (denominator > 0) {
+        return numerator / denominator;
+      }
+    }
+    return null;
+  }
+
+  double? _calculateBbPercentage() {
+    final bb = int.tryParse(_bbController.text);
+    final atBats = int.tryParse(_atBatsController.text);
+    final hbp = int.tryParse(_hbpController.text);
+
+    if (bb != null && atBats != null && hbp != null) {
+      final denominator = atBats + bb + hbp;
+      if (denominator > 0) {
+        return (bb / denominator) * 100;
+      }
+    }
+    return null;
+  }
+
   double? _calculateWhip() {
     final walks = int.tryParse(_walksController.text);
     final hits = int.tryParse(_hitsController.text);
@@ -295,6 +326,8 @@ class _HomeState extends State<Home> {
                         sf: int.tryParse(_sfController.text),
                         bb: int.tryParse(_bbController.text),
                         average: _calculateAverage(),
+                        obp: _calculateObp(),
+                        bbPercentage: _calculateBbPercentage(),
                         // Pitching stats
                         wins: int.tryParse(_winsController.text),
                         losses: int.tryParse(_lossesController.text),
@@ -376,7 +409,7 @@ class _HomeState extends State<Home> {
                   subtitle: Text(
                     player.isPitcher
                         ? 'V-D: ${player.wins ?? 0}-${player.losses ?? 0}, ERA: ${player.era?.toStringAsFixed(2) ?? "0.00"}'
-                        : 'AVG: ${(player.average ?? 0).toStringAsFixed(3)}, HR: ${player.homeRuns ?? 0}, RBI: ${player.rbi ?? 0}',
+                        : 'AVG: ${(player.average ?? 0).toStringAsFixed(3)}, OBP: ${(player.obp ?? 0).toStringAsFixed(3)}, HR: ${player.homeRuns ?? 0}, RBI: ${player.rbi ?? 0}',
                   ),
                 ),
               );
@@ -476,6 +509,8 @@ class _HomeState extends State<Home> {
                   sf: int.tryParse(_sfController.text),
                   bb: int.tryParse(_bbController.text),
                   average: _calculateAverage(),
+                  obp: _calculateObp(),
+                  bbPercentage: _calculateBbPercentage(),
                   // Pitching stats
                   wins: int.tryParse(_winsController.text),
                   losses: int.tryParse(_lossesController.text),

@@ -31,6 +31,7 @@ class DatabaseServices {
   final String columnSf = 'sf';
   final String columnBb = 'bb';
   final String columnObp = 'obp';
+  final String columnBbPercentage = 'bb_percentage';
   final String columnSlg = 'slg';
   final String columnWins = 'wins';
   final String columnLosses = 'losses';
@@ -65,7 +66,7 @@ class DatabaseServices {
 
     return await openDatabase(
       databasePath,
-      version: 6,
+      version: 7,
       onCreate: (db, version) async {
         print('Creating new database...');
         await _createTables(db);
@@ -90,6 +91,12 @@ class DatabaseServices {
           ''');
           await db.execute('''
             ALTER TABLE $tableName ADD COLUMN $columnBb INTEGER;
+          ''');
+        }
+
+        if (oldVersion < 7) {
+          await db.execute('''
+            ALTER TABLE $tableName ADD COLUMN $columnBbPercentage REAL;
           ''');
         }
         
@@ -118,6 +125,7 @@ class DatabaseServices {
             $columnSf INTEGER,
             $columnBb INTEGER,
             $columnObp REAL,
+            $columnBbPercentage REAL,
             $columnSlg REAL,
             $columnWins INTEGER,
             $columnLosses INTEGER,

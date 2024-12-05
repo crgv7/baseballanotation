@@ -97,6 +97,9 @@ class PlayerDetailsScreen extends StatelessWidget {
                       _buildStatRow('Elevado de Sacrificio', player.sf),
                       _buildStatRow('Base por Bolas', player.bb),
                       _buildStatRow('OBP', player.obp),
+                      _buildStatRow('BB%', player.bbPercentage != null 
+                          ? '${player.bbPercentage!.toStringAsFixed(1)}%' 
+                          : '-'),
                       _buildStatRow('Slugging', player.slg),
                     ],
                   ),

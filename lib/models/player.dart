@@ -15,6 +15,7 @@ class Player {
   final int? sf;   // Sacrifice Fly
   final int? bb;   // Base on Balls (Walks)
   final double? obp; // On-base percentage
+  final double? bbPercentage; // Base on balls percentage
   final double? slg; // Slugging percentage
   
   // Pitching stats
@@ -42,6 +43,7 @@ class Player {
     this.sf,
     this.bb,
     this.obp,
+    this.bbPercentage,
     this.slg,
     this.wins,
     this.losses,
@@ -69,6 +71,7 @@ class Player {
       sf: map['sf'] as int?,
       bb: map['bb'] as int?,
       obp: map['obp'] as double?,
+      bbPercentage: map['bb_percentage'] as double?,
       slg: map['slg'] as double?,
       wins: map['wins'] as int?,
       losses: map['losses'] as int?,
@@ -97,6 +100,7 @@ class Player {
       'sf': sf,
       'bb': bb,
       'obp': obp,
+      'bb_percentage': bbPercentage,
       'slg': slg,
       'wins': wins,
       'losses': losses,
@@ -124,6 +128,7 @@ class Player {
     int? sf,
     int? bb,
     double? obp,
+    double? bbPercentage,
     double? slg,
     int? wins,
     int? losses,
@@ -149,6 +154,7 @@ class Player {
       sf: sf ?? this.sf,
       bb: bb ?? this.bb,
       obp: obp ?? this.obp,
+      bbPercentage: bbPercentage ?? this.bbPercentage,
       slg: slg ?? this.slg,
       wins: wins ?? this.wins,
       losses: losses ?? this.losses,
