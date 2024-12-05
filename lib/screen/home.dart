@@ -1,6 +1,7 @@
 import 'package:baseballanotation/models/player.dart';
 import 'package:baseballanotation/services/database_services.dart';
 import 'package:flutter/material.dart';
+import 'package:baseballanotation/screen/player_details_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,7 +13,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final DatabaseServices databaseServices = DatabaseServices.instance;
   late Future<List<Player>> _playersFuture;
-  
+
   // Common fields
   final TextEditingController _nameController = TextEditingController();
   bool _isPitcher = false;
@@ -34,7 +35,8 @@ class _HomeState extends State<Home> {
   final TextEditingController _eraController = TextEditingController();
   final TextEditingController _strikeoutsController = TextEditingController();
   final TextEditingController _walksController = TextEditingController();
-  final TextEditingController _inningsPitchedController = TextEditingController();
+  final TextEditingController _inningsPitchedController =
+      TextEditingController();
   final TextEditingController _savesController = TextEditingController();
 
   @override
@@ -156,13 +158,15 @@ class _HomeState extends State<Home> {
         const SizedBox(height: 8),
         TextField(
           controller: _hbpController,
-          decoration: const InputDecoration(labelText: 'Golpeado por lanzamiento (HBP)'),
+          decoration: const InputDecoration(
+              labelText: 'Golpeado por lanzamiento (HBP)'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
         TextField(
           controller: _sfController,
-          decoration: const InputDecoration(labelText: 'Elevado de sacrificio (SF)'),
+          decoration:
+              const InputDecoration(labelText: 'Elevado de sacrificio (SF)'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
@@ -258,7 +262,10 @@ class _HomeState extends State<Home> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      if (_isPitcher) _buildPitchingFields() else _buildBattingFields(),
+                      if (_isPitcher)
+                        _buildPitchingFields()
+                      else
+                        _buildBattingFields(),
                     ],
                   ),
                 ),
@@ -273,7 +280,7 @@ class _HomeState extends State<Home> {
                   TextButton(
                     onPressed: () async {
                       if (_nameController.text.isEmpty) return;
-                      
+
                       final player = Player(
                         name: _nameController.text,
                         isPitcher: _isPitcher,
@@ -294,11 +301,12 @@ class _HomeState extends State<Home> {
                         era: double.tryParse(_eraController.text),
                         strikeouts: int.tryParse(_strikeoutsController.text),
                         walks: int.tryParse(_walksController.text),
-                        inningsPitched: int.tryParse(_inningsPitchedController.text),
+                        inningsPitched:
+                            int.tryParse(_inningsPitchedController.text),
                         saves: int.tryParse(_savesController.text),
                         whip: _calculateWhip(),
                       );
-                      
+
                       try {
                         await databaseServices.addPlayer(player);
                         if (mounted) {
@@ -332,132 +340,45 @@ class _HomeState extends State<Home> {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final player = snapshot.data![index];
-              return ListTile(
-                title: Text(player.name),
-                subtitle: Text(
-                  player.isPitcher
-                      ? 'V-D: ${player.wins ?? 0}-${player.losses ?? 0}, ERA: ${player.era?.toStringAsFixed(2) ?? "0.00"}'
-                      : 'AVG: ${(player.average ?? 0).toStringAsFixed(3)}, HR: ${player.homeRuns ?? 0}, RBI: ${player.rbi ?? 0}',
-                ),
-                trailing: IconButton(
-                  onPressed: () async {
-                    await databaseServices.deletePlayer(player.id!);
-                    _refreshPlayers();
-                  },
-                  icon: const Icon(Icons.delete),
-                ),
-                onTap: () {
-                  // Pre-fill the controllers
-                  _nameController.text = player.name;
-                  _isPitcher = player.isPitcher;
-                  
-                  if (player.isPitcher) {
-                    _winsController.text = player.wins?.toString() ?? '';
-                    _lossesController.text = player.losses?.toString() ?? '';
-                    _eraController.text = player.era?.toString() ?? '';
-                    _strikeoutsController.text = player.strikeouts?.toString() ?? '';
-                    _walksController.text = player.walks?.toString() ?? '';
-                    _inningsPitchedController.text = player.inningsPitched?.toString() ?? '';
-                    _savesController.text = player.saves?.toString() ?? '';
-                  } else {
-                    _hitsController.text = player.hits?.toString() ?? '';
-                    _atBatsController.text = player.atBats?.toString() ?? '';
-                    _homeRunsController.text = player.homeRuns?.toString() ?? '';
-                    _rbiController.text = player.rbi?.toString() ?? '';
-                    _runsController.text = player.runs?.toString() ?? '';
-                    _stolenBasesController.text = player.stolenBases?.toString() ?? '';
-                    _hbpController.text = player.hbp?.toString() ?? '';
-                    _sfController.text = player.sf?.toString() ?? '';
-                    _bbController.text = player.bb?.toString() ?? '';
-                  }
-                  
-                  showDialog(
-                    context: context,
-                    builder: (_) => StatefulBuilder(
-                      builder: (dialogContext, setDialogState) => AlertDialog(
-                        title: const Text('Editar jugador'),
-                        content: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextField(
-                                controller: _nameController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Nombre del jugador',
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              SwitchListTile(
-                                title: const Text('¿Es lanzador?'),
-                                value: _isPitcher,
-                                onChanged: (bool value) {
-                                  setDialogState(() {
-                                    _isPitcher = value;
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 16),
-                              if (_isPitcher) _buildPitchingFields() else _buildBattingFields(),
-                            ],
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(dialogContext).pop();
-                              _clearControllers();
-                            },
-                            child: const Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              if (_nameController.text.isEmpty) return;
-                              
-                              final updatedPlayer = Player(
-                                id: player.id,
-                                name: _nameController.text,
-                                isPitcher: _isPitcher,
-                                // Batting stats
-                                hits: int.tryParse(_hitsController.text),
-                                atBats: int.tryParse(_atBatsController.text),
-                                homeRuns: int.tryParse(_homeRunsController.text),
-                                rbi: int.tryParse(_rbiController.text),
-                                runs: int.tryParse(_runsController.text),
-                                stolenBases: int.tryParse(_stolenBasesController.text),
-                                hbp: int.tryParse(_hbpController.text),
-                                sf: int.tryParse(_sfController.text),
-                                bb: int.tryParse(_bbController.text),
-                                average: _calculateAverage(),
-                                // Pitching stats
-                                wins: int.tryParse(_winsController.text),
-                                losses: int.tryParse(_lossesController.text),
-                                era: double.tryParse(_eraController.text),
-                                strikeouts: int.tryParse(_strikeoutsController.text),
-                                walks: int.tryParse(_walksController.text),
-                                inningsPitched: int.tryParse(_inningsPitchedController.text),
-                                saves: int.tryParse(_savesController.text),
-                                whip: _calculateWhip(),
-                              );
-                              
-                              try {
-                                await databaseServices.updatePlayer(updatedPlayer);
-                                if (mounted) {
-                                  Navigator.of(dialogContext).pop();
-                                  _refreshPlayers();
-                                }
-                              } catch (e) {
-                                print('Error actualizando jugador: $e');
-                              } finally {
-                                _clearControllers();
-                              }
-                            },
-                            child: const Text('Actualizar'),
-                          ),
-                        ],
+              return Card(
+                child: ListTile(
+                  title: Text(player.name),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.visibility),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PlayerDetailsScreen(player: player),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                  );
-                },
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          _editPlayer(player);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () async {
+                          await databaseServices.deletePlayer(player.id!);
+                          _refreshPlayers();
+                        },
+                      ),
+                    ],
+                  ),
+                  subtitle: Text(
+                    player.isPitcher
+                        ? 'V-D: ${player.wins ?? 0}-${player.losses ?? 0}, ERA: ${player.era?.toStringAsFixed(2) ?? "0.00"}'
+                        : 'AVG: ${(player.average ?? 0).toStringAsFixed(3)}, HR: ${player.homeRuns ?? 0}, RBI: ${player.rbi ?? 0}',
+                  ),
+                ),
               );
             },
           );
@@ -467,6 +388,122 @@ class _HomeState extends State<Home> {
           return const Center(child: CircularProgressIndicator());
         }
       },
+    );
+  }
+
+  void _editPlayer(Player player) {
+    // Pre-fill the controllers
+    _nameController.text = player.name;
+    _isPitcher = player.isPitcher;
+
+    if (player.isPitcher) {
+      _winsController.text = player.wins?.toString() ?? '';
+      _lossesController.text = player.losses?.toString() ?? '';
+      _eraController.text = player.era?.toString() ?? '';
+      _strikeoutsController.text = player.strikeouts?.toString() ?? '';
+      _walksController.text = player.walks?.toString() ?? '';
+      _inningsPitchedController.text = player.inningsPitched?.toString() ?? '';
+      _savesController.text = player.saves?.toString() ?? '';
+    } else {
+      _hitsController.text = player.hits?.toString() ?? '';
+      _atBatsController.text = player.atBats?.toString() ?? '';
+      _homeRunsController.text = player.homeRuns?.toString() ?? '';
+      _rbiController.text = player.rbi?.toString() ?? '';
+      _runsController.text = player.runs?.toString() ?? '';
+      _stolenBasesController.text = player.stolenBases?.toString() ?? '';
+      _hbpController.text = player.hbp?.toString() ?? '';
+      _sfController.text = player.sf?.toString() ?? '';
+      _bbController.text = player.bb?.toString() ?? '';
+    }
+
+    showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          title: const Text('Editar jugador'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre del jugador',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SwitchListTile(
+                  title: const Text('¿Es lanzador?'),
+                  value: _isPitcher,
+                  onChanged: (bool value) {
+                    setDialogState(() {
+                      _isPitcher = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                if (_isPitcher)
+                  _buildPitchingFields()
+                else
+                  _buildBattingFields(),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _clearControllers();
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (_nameController.text.isEmpty) return;
+
+                final updatedPlayer = Player(
+                  id: player.id,
+                  name: _nameController.text,
+                  isPitcher: _isPitcher,
+                  // Batting stats
+                  hits: int.tryParse(_hitsController.text),
+                  atBats: int.tryParse(_atBatsController.text),
+                  homeRuns: int.tryParse(_homeRunsController.text),
+                  rbi: int.tryParse(_rbiController.text),
+                  runs: int.tryParse(_runsController.text),
+                  stolenBases: int.tryParse(_stolenBasesController.text),
+                  hbp: int.tryParse(_hbpController.text),
+                  sf: int.tryParse(_sfController.text),
+                  bb: int.tryParse(_bbController.text),
+                  average: _calculateAverage(),
+                  // Pitching stats
+                  wins: int.tryParse(_winsController.text),
+                  losses: int.tryParse(_lossesController.text),
+                  era: double.tryParse(_eraController.text),
+                  strikeouts: int.tryParse(_strikeoutsController.text),
+                  walks: int.tryParse(_walksController.text),
+                  inningsPitched: int.tryParse(_inningsPitchedController.text),
+                  saves: int.tryParse(_savesController.text),
+                  whip: _calculateWhip(),
+                );
+
+                try {
+                  await databaseServices.updatePlayer(updatedPlayer);
+                  if (mounted) {
+                    Navigator.of(dialogContext).pop();
+                    _refreshPlayers();
+                  }
+                } catch (e) {
+                  print('Error actualizando jugador: $e');
+                } finally {
+                  _clearControllers();
+                }
+              },
+              child: const Text('Actualizar'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
