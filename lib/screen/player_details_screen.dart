@@ -89,7 +89,10 @@ class PlayerDetailsScreen extends StatelessWidget {
                       _buildStatRow('Average', player.average),
                       _buildStatRow('Hits', player.hits),
                       _buildStatRow('Turnos al Bate', player.atBats),
+                      _buildStatRow('Dobles (2B)', player.doubles),
+                      _buildStatRow('Triples (3B)', player.triples),
                       _buildStatRow('Jonrones', player.homeRuns),
+                      _buildStatRow('Slugging', player.slg),
                       _buildStatRow('Carreras Impulsadas', player.rbi),
                       _buildStatRow('Carreras Anotadas', player.runs),
                       _buildStatRow('Bases Robadas', player.stolenBases),
@@ -100,7 +103,6 @@ class PlayerDetailsScreen extends StatelessWidget {
                       _buildStatRow('BB%', player.bbPercentage != null 
                           ? '${player.bbPercentage!.toStringAsFixed(1)}%' 
                           : '-'),
-                      _buildStatRow('Slugging', player.slg),
                     ],
                   ),
                 ),
