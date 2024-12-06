@@ -24,6 +24,8 @@ class DatabaseServices {
   final String columnAtBats = 'at_bats';
   final String columnAverage = 'average';
   final String columnHomeRuns = 'home_runs';
+  final String columnDoubles = 'doubles';
+  final String columnTriples = 'triples';
   final String columnRbi = 'rbi';
   final String columnRuns = 'runs';
   final String columnStolenBases = 'stolen_bases';
@@ -66,7 +68,7 @@ class DatabaseServices {
 
     return await openDatabase(
       databasePath,
-      version: 7,
+      version: 8,
       onCreate: (db, version) async {
         print('Creating new database...');
         await _createTables(db);
@@ -99,6 +101,15 @@ class DatabaseServices {
             ALTER TABLE $tableName ADD COLUMN $columnBbPercentage REAL;
           ''');
         }
+
+        if (oldVersion < 8) {
+          await db.execute('''
+            ALTER TABLE $tableName ADD COLUMN $columnDoubles INTEGER;
+          ''');
+          await db.execute('''
+            ALTER TABLE $tableName ADD COLUMN $columnTriples INTEGER;
+          ''');
+        }
         
         await _createTables(db); // Aseguramos que todas las tablas existan
       },
@@ -118,6 +129,8 @@ class DatabaseServices {
             $columnAtBats INTEGER,
             $columnAverage REAL,
             $columnHomeRuns INTEGER,
+            $columnDoubles INTEGER,
+            $columnTriples INTEGER,
             $columnRbi INTEGER,
             $columnRuns INTEGER,
             $columnStolenBases INTEGER,

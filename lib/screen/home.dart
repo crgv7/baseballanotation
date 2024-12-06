@@ -22,6 +22,8 @@ class _HomeState extends State<Home> {
   final TextEditingController _hitsController = TextEditingController();
   final TextEditingController _atBatsController = TextEditingController();
   final TextEditingController _homeRunsController = TextEditingController();
+  final TextEditingController _doublesController = TextEditingController();
+  final TextEditingController _triplesController = TextEditingController();
   final TextEditingController _rbiController = TextEditingController();
   final TextEditingController _runsController = TextEditingController();
   final TextEditingController _stolenBasesController = TextEditingController();
@@ -58,6 +60,8 @@ class _HomeState extends State<Home> {
     _hitsController.dispose();
     _atBatsController.dispose();
     _homeRunsController.dispose();
+    _doublesController.dispose();
+    _triplesController.dispose();
     _rbiController.dispose();
     _runsController.dispose();
     _stolenBasesController.dispose();
@@ -81,6 +85,8 @@ class _HomeState extends State<Home> {
     _hitsController.clear();
     _atBatsController.clear();
     _homeRunsController.clear();
+    _doublesController.clear();
+    _triplesController.clear();
     _rbiController.clear();
     _runsController.clear();
     _stolenBasesController.clear();
@@ -166,6 +172,18 @@ class _HomeState extends State<Home> {
         TextField(
           controller: _homeRunsController,
           decoration: const InputDecoration(labelText: 'Jonrones'),
+          keyboardType: TextInputType.number,
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _doublesController,
+          decoration: const InputDecoration(labelText: 'Doubles (2B)'),
+          keyboardType: TextInputType.number,
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _triplesController,
+          decoration: const InputDecoration(labelText: 'Triples (3B)'),
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 8),
@@ -319,6 +337,8 @@ class _HomeState extends State<Home> {
                         hits: int.tryParse(_hitsController.text),
                         atBats: int.tryParse(_atBatsController.text),
                         homeRuns: int.tryParse(_homeRunsController.text),
+                        doubles: int.tryParse(_doublesController.text),
+                        triples: int.tryParse(_triplesController.text),
                         rbi: int.tryParse(_rbiController.text),
                         runs: int.tryParse(_runsController.text),
                         stolenBases: int.tryParse(_stolenBasesController.text),
@@ -441,6 +461,8 @@ class _HomeState extends State<Home> {
       _hitsController.text = player.hits?.toString() ?? '';
       _atBatsController.text = player.atBats?.toString() ?? '';
       _homeRunsController.text = player.homeRuns?.toString() ?? '';
+      _doublesController.text = player.doubles?.toString() ?? '';
+      _triplesController.text = player.triples?.toString() ?? '';
       _rbiController.text = player.rbi?.toString() ?? '';
       _runsController.text = player.runs?.toString() ?? '';
       _stolenBasesController.text = player.stolenBases?.toString() ?? '';
@@ -502,6 +524,8 @@ class _HomeState extends State<Home> {
                   hits: int.tryParse(_hitsController.text),
                   atBats: int.tryParse(_atBatsController.text),
                   homeRuns: int.tryParse(_homeRunsController.text),
+                  doubles: int.tryParse(_doublesController.text),
+                  triples: int.tryParse(_triplesController.text),
                   rbi: int.tryParse(_rbiController.text),
                   runs: int.tryParse(_runsController.text),
                   stolenBases: int.tryParse(_stolenBasesController.text),

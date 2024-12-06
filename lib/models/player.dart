@@ -8,6 +8,8 @@ class Player {
   final int? atBats;
   final double? average;
   final int? homeRuns;
+  final int? doubles;  // New field for 2B
+  final int? triples;  // New field for 3B
   final int? rbi;
   final int? runs;
   final int? stolenBases;
@@ -36,6 +38,8 @@ class Player {
     this.atBats,
     this.average,
     this.homeRuns,
+    this.doubles,  // New field
+    this.triples,  // New field
     this.rbi,
     this.runs,
     this.stolenBases,
@@ -64,6 +68,8 @@ class Player {
       atBats: map['at_bats'] as int?,
       average: map['average'] as double?,
       homeRuns: map['home_runs'] as int?,
+      doubles: map['doubles'] as int?,  // New field
+      triples: map['triples'] as int?,  // New field
       rbi: map['rbi'] as int?,
       runs: map['runs'] as int?,
       stolenBases: map['stolen_bases'] as int?,
@@ -93,6 +99,8 @@ class Player {
       'at_bats': atBats,
       'average': average,
       'home_runs': homeRuns,
+      'doubles': doubles,  // New field
+      'triples': triples,  // New field
       'rbi': rbi,
       'runs': runs,
       'stolen_bases': stolenBases,
@@ -121,6 +129,8 @@ class Player {
     int? atBats,
     double? average,
     int? homeRuns,
+    int? doubles,  // New field
+    int? triples,  // New field
     int? rbi,
     int? runs,
     int? stolenBases,
@@ -147,6 +157,8 @@ class Player {
       atBats: atBats ?? this.atBats,
       average: average ?? this.average,
       homeRuns: homeRuns ?? this.homeRuns,
+      doubles: doubles ?? this.doubles,  // New field
+      triples: triples ?? this.triples,  // New field
       rbi: rbi ?? this.rbi,
       runs: runs ?? this.runs,
       stolenBases: stolenBases ?? this.stolenBases,
