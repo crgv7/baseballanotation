@@ -140,6 +140,36 @@ class _GraficosState extends State<Graficos> {
                 (Player player) => (player.rbi ?? 0).toDouble(),
                 (value) => value.toInt().toString(),
               ),
+              _buildChart(
+                'Strikeouts (SO)',
+                batters,
+                (Player player) => (player.strikeouts ?? 0).toDouble(),
+                (value) => value.toInt().toString(),
+              ),
+              _buildChart(
+                'Bases por Bolas (BB)',
+                batters,
+                (Player player) => (player.bb ?? 0).toDouble(),
+                (value) => value.toInt().toString(),
+              ),
+              _buildChart(
+                'OBP (On-Base Percentage)',
+                batters,
+                (Player player) => player.obp ?? 0.0,
+                (value) => value.toStringAsFixed(3),
+              ),
+              _buildChart(
+                'Slugging',
+                batters,
+                (Player player) => player.slg ?? 0.0,
+                (value) => value.toStringAsFixed(3),
+              ),
+              _buildChart(
+                'BABIP',
+                batters,
+                (Player player) => player.babip ?? 0.0,
+                (value) => value.toStringAsFixed(3),
+              ),
             ],
           ),
         );
