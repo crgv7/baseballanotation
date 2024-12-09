@@ -20,7 +20,7 @@ import 'package:baseballanotation/screen/about/about_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   try {
     // Inicializar la base de datos y esperar a que esté lista
     final db = await DatabaseServices.instance.database;
@@ -77,7 +77,8 @@ class MyApp extends StatelessWidget {
                 backgroundColor: const Color(0xFF1565C0),
                 foregroundColor: Colors.white,
                 elevation: 2,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -115,7 +116,8 @@ class MyApp extends StatelessWidget {
                 backgroundColor: const Color(0xFF1565C0),
                 foregroundColor: Colors.white,
                 elevation: 2,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -155,7 +157,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final DatabaseServices _databaseServices = DatabaseServices.instance;
   List<Player> players = [];
   List<Event> events = [];
-  StreamController<List<Event>> _eventsController = StreamController<List<Event>>.broadcast();
+  StreamController<List<Event>> _eventsController =
+      StreamController<List<Event>>.broadcast();
   Stream<List<Event>> get eventsStream => _eventsController.stream;
 
   @override
@@ -238,20 +241,18 @@ class _MyHomePageState extends State<MyHomePage> {
     Player? hitsLeader;
 
     for (var player in players) {
-      if (battingLeader == null || 
+      if (battingLeader == null ||
           (player.average ?? 0) > (battingLeader.average ?? 0)) {
         battingLeader = player;
       }
-      if (homeRunLeader == null || 
+      if (homeRunLeader == null ||
           (player.homeRuns ?? 0) > (homeRunLeader.homeRuns ?? 0)) {
         homeRunLeader = player;
       }
-      if (rbiLeader == null || 
-          (player.rbi ?? 0) > (rbiLeader.rbi ?? 0)) {
+      if (rbiLeader == null || (player.rbi ?? 0) > (rbiLeader.rbi ?? 0)) {
         rbiLeader = player;
       }
-      if (hitsLeader == null || 
-          (player.hits ?? 0) > (hitsLeader.hits ?? 0)) {
+      if (hitsLeader == null || (player.hits ?? 0) > (hitsLeader.hits ?? 0)) {
         hitsLeader = player;
       }
     }

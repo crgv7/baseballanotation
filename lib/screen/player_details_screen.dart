@@ -37,6 +37,23 @@ class PlayerDetailsScreen extends StatelessWidget {
     );
   }
 
+  double? _calculateBABIP() {
+    if (player.hits == null || player.homeRuns == null || 
+        player.atBats == null || player.strikeouts == null || 
+        player.sf == null) {
+      return null;
+    }
+
+    final numerator = (player.hits! - player.homeRuns!).toDouble();
+    final denominator = (player.atBats! - player.strikeouts! - player.homeRuns! + player.sf!).toDouble();
+    
+    if (denominator == 0) {
+      return null;
+    }
+
+    return numerator / denominator;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,6 +110,7 @@ class PlayerDetailsScreen extends StatelessWidget {
                       _buildStatRow('Triples (3B)', player.triples),
                       _buildStatRow('Jonrones', player.homeRuns),
                       _buildStatRow('Slugging', player.slg),
+                      _buildStatRow('BABIP', _calculateBABIP()),
                       _buildStatRow('Carreras Impulsadas', player.rbi),
                       _buildStatRow('Carreras Anotadas', player.runs),
                       _buildStatRow('Bases Robadas', player.stolenBases),

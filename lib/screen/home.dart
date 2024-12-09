@@ -30,12 +30,13 @@ class _HomeState extends State<Home> {
   final TextEditingController _hbpController = TextEditingController();
   final TextEditingController _sfController = TextEditingController();
   final TextEditingController _bbController = TextEditingController();
+  final TextEditingController _strikeoutsController = TextEditingController();
 
   // Pitching stats controllers
   final TextEditingController _winsController = TextEditingController();
   final TextEditingController _lossesController = TextEditingController();
   final TextEditingController _eraController = TextEditingController();
-  final TextEditingController _strikeoutsController = TextEditingController();
+  final TextEditingController _strikeoutsPitchingController = TextEditingController();
   final TextEditingController _walksController = TextEditingController();
   final TextEditingController _inningsPitchedController =
       TextEditingController();
@@ -68,11 +69,12 @@ class _HomeState extends State<Home> {
     _hbpController.dispose();
     _sfController.dispose();
     _bbController.dispose();
+    _strikeoutsController.dispose();
     // Pitching controllers
     _winsController.dispose();
     _lossesController.dispose();
     _eraController.dispose();
-    _strikeoutsController.dispose();
+    _strikeoutsPitchingController.dispose();
     _walksController.dispose();
     _inningsPitchedController.dispose();
     _savesController.dispose();
@@ -93,11 +95,12 @@ class _HomeState extends State<Home> {
     _hbpController.clear();
     _sfController.clear();
     _bbController.clear();
+    _strikeoutsController.clear();
     // Clear pitching stats
     _winsController.clear();
     _lossesController.clear();
     _eraController.clear();
-    _strikeoutsController.clear();
+    _strikeoutsPitchingController.clear();
     _walksController.clear();
     _inningsPitchedController.clear();
     _savesController.clear();
@@ -244,6 +247,12 @@ class _HomeState extends State<Home> {
           decoration: const InputDecoration(labelText: 'Base por bolas (BB)'),
           keyboardType: TextInputType.number,
         ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _strikeoutsController,
+          decoration: const InputDecoration(labelText: 'Ponches (SO)'),
+          keyboardType: TextInputType.number,
+        ),
       ],
     );
   }
@@ -270,7 +279,7 @@ class _HomeState extends State<Home> {
         ),
         const SizedBox(height: 8),
         TextField(
-          controller: _strikeoutsController,
+          controller: _strikeoutsPitchingController,
           decoration: const InputDecoration(labelText: 'Ponches'),
           keyboardType: TextInputType.number,
         ),
@@ -365,6 +374,7 @@ class _HomeState extends State<Home> {
                         hbp: int.tryParse(_hbpController.text),
                         sf: int.tryParse(_sfController.text),
                         bb: int.tryParse(_bbController.text),
+                        strikeouts: int.tryParse(_strikeoutsController.text),
                         average: _calculateAverage(),
                         obp: _calculateObp(),
                         bbPercentage: _calculateBbPercentage(),
@@ -373,7 +383,6 @@ class _HomeState extends State<Home> {
                         wins: int.tryParse(_winsController.text),
                         losses: int.tryParse(_lossesController.text),
                         era: double.tryParse(_eraController.text),
-                        strikeouts: int.tryParse(_strikeoutsController.text),
                         walks: int.tryParse(_walksController.text),
                         inningsPitched:
                             int.tryParse(_inningsPitchedController.text),
@@ -474,7 +483,7 @@ class _HomeState extends State<Home> {
       _winsController.text = player.wins?.toString() ?? '';
       _lossesController.text = player.losses?.toString() ?? '';
       _eraController.text = player.era?.toString() ?? '';
-      _strikeoutsController.text = player.strikeouts?.toString() ?? '';
+      _strikeoutsPitchingController.text = player.strikeouts?.toString() ?? '';
       _walksController.text = player.walks?.toString() ?? '';
       _inningsPitchedController.text = player.inningsPitched?.toString() ?? '';
       _savesController.text = player.saves?.toString() ?? '';
@@ -490,6 +499,7 @@ class _HomeState extends State<Home> {
       _hbpController.text = player.hbp?.toString() ?? '';
       _sfController.text = player.sf?.toString() ?? '';
       _bbController.text = player.bb?.toString() ?? '';
+      _strikeoutsController.text = player.strikeouts?.toString() ?? '';
     }
 
     showDialog(
@@ -553,6 +563,7 @@ class _HomeState extends State<Home> {
                   hbp: int.tryParse(_hbpController.text),
                   sf: int.tryParse(_sfController.text),
                   bb: int.tryParse(_bbController.text),
+                  strikeouts: int.tryParse(_strikeoutsController.text),
                   average: _calculateAverage(),
                   obp: _calculateObp(),
                   bbPercentage: _calculateBbPercentage(),
@@ -561,7 +572,6 @@ class _HomeState extends State<Home> {
                   wins: int.tryParse(_winsController.text),
                   losses: int.tryParse(_lossesController.text),
                   era: double.tryParse(_eraController.text),
-                  strikeouts: int.tryParse(_strikeoutsController.text),
                   walks: int.tryParse(_walksController.text),
                   inningsPitched: int.tryParse(_inningsPitchedController.text),
                   saves: int.tryParse(_savesController.text),

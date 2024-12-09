@@ -19,6 +19,7 @@ class Player {
   final double? obp; // On-base percentage
   final double? bbPercentage; // Base on balls percentage
   final double? slg; // Slugging percentage
+  final double? babip; // Batting Average on Balls in Play
   
   // Pitching stats
   final int? wins;
@@ -49,6 +50,7 @@ class Player {
     this.obp,
     this.bbPercentage,
     this.slg,
+    this.babip,
     this.wins,
     this.losses,
     this.era,
@@ -79,6 +81,7 @@ class Player {
       obp: map['obp'] as double?,
       bbPercentage: map['bb_percentage'] as double?,
       slg: map['slg'] as double?,
+      babip: map['babip'] as double?,
       wins: map['wins'] as int?,
       losses: map['losses'] as int?,
       era: map['era'] as double?,
@@ -110,6 +113,7 @@ class Player {
       'obp': obp,
       'bb_percentage': bbPercentage,
       'slg': slg,
+      'babip': babip,
       'wins': wins,
       'losses': losses,
       'era': era,
@@ -140,6 +144,7 @@ class Player {
     double? obp,
     double? bbPercentage,
     double? slg,
+    double? babip,
     int? wins,
     int? losses,
     double? era,
@@ -168,6 +173,7 @@ class Player {
       obp: obp ?? this.obp,
       bbPercentage: bbPercentage ?? this.bbPercentage,
       slg: slg ?? this.slg,
+      babip: babip ?? this.babip,
       wins: wins ?? this.wins,
       losses: losses ?? this.losses,
       era: era ?? this.era,

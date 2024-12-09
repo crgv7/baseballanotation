@@ -68,7 +68,7 @@ class DatabaseServices {
 
     return await openDatabase(
       databasePath,
-      version: 8,
+      version: 10,
       onCreate: (db, version) async {
         print('Creating new database...');
         await _createTables(db);
@@ -110,6 +110,23 @@ class DatabaseServices {
             ALTER TABLE $tableName ADD COLUMN $columnTriples INTEGER;
           ''');
         }
+
+        if (oldVersion < 9) {
+          await db.execute('''
+            ALTER TABLE $tableName ADD COLUMN babip REAL;
+          ''');
+        }
+
+        if (oldVersion < 10) {
+          // Ensure babip column exists and is of the correct type
+          try {
+            await db.execute('''
+              ALTER TABLE $tableName ADD COLUMN babip REAL;
+            ''');
+          } catch (e) {
+            print('Babip column might already exist: $e');
+          }
+        }
         
         await _createTables(db); // Aseguramos que todas las tablas existan
       },
@@ -140,6 +157,7 @@ class DatabaseServices {
             $columnObp REAL,
             $columnBbPercentage REAL,
             $columnSlg REAL,
+            babip REAL,
             $columnWins INTEGER,
             $columnLosses INTEGER,
             $columnEra REAL,
