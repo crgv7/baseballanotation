@@ -1,22 +1,22 @@
-import 'package:baseballanotation/screen/calendario/calendar.dart';
-import 'package:baseballanotation/screen/graficos.dart';
-import 'package:baseballanotation/screen/home.dart';
-import 'package:baseballanotation/screen/lideres.dart';
-import 'package:baseballanotation/screen/teams/teams_screen.dart';
-import 'package:baseballanotation/screen/my_team/my_team_screen.dart';
-import 'package:baseballanotation/screen/games/games_screen.dart';
-import 'package:baseballanotation/services/database_services.dart';
-import 'package:baseballanotation/models/player.dart';
-import 'package:baseballanotation/models/event.dart';
+import 'package:baseballScore/screen/calendario/calendar.dart';
+import 'package:baseballScore/screen/graficos.dart';
+import 'package:baseballScore/screen/home.dart';
+import 'package:baseballScore/screen/lideres.dart';
+import 'package:baseballScore/screen/teams/teams_screen.dart';
+import 'package:baseballScore/screen/my_team/my_team_screen.dart';
+import 'package:baseballScore/screen/games/games_screen.dart';
+import 'package:baseballScore/services/database_services.dart';
+import 'package:baseballScore/models/player.dart';
+import 'package:baseballScore/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:baseballanotation/screen/configuration/configuration_screen.dart';
+import 'package:baseballScore/screen/configuration/configuration_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
-import 'package:baseballanotation/screen/about/about_screen.dart';
+import 'package:baseballScore/screen/about/about_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

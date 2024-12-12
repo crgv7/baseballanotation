@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:baseballanotation/services/database_services.dart';
+import 'package:baseballScore/services/database_services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -38,7 +38,7 @@ class ConfigurationScreen extends StatelessWidget {
         // Construir la ruta a la carpeta Download
         final String rootPath = paths.sublist(0, androidIndex).join('/');
         final downloadPath = '$rootPath/Download';
-        
+
         // Crear el directorio si no existe
         final downloadDir = Directory(downloadPath);
         if (!await downloadDir.exists()) {
@@ -92,13 +92,14 @@ class ConfigurationScreen extends StatelessWidget {
       // Obtener directorio de exportación
       final exportDir = await _getExportDirectory();
       print('Directorio de exportación obtenido: $exportDir');
-      
+
       if (exportDir == null) {
         if (!context.mounted) return;
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('No se pudo acceder al directorio de almacenamiento. Por favor, verifica los permisos de la aplicación en la configuración del dispositivo.'),
+            content: Text(
+                'No se pudo acceder al directorio de almacenamiento. Por favor, verifica los permisos de la aplicación en la configuración del dispositivo.'),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 5),
           ),
@@ -106,7 +107,8 @@ class ConfigurationScreen extends StatelessWidget {
         return;
       }
 
-      final timestamp = DateTime.now().toIso8601String().replaceAll(RegExp('[:]'), '-');
+      final timestamp =
+          DateTime.now().toIso8601String().replaceAll(RegExp('[:]'), '-');
       final backupPath = join(exportDir, 'baseball_backup_$timestamp.db');
       print('Intentando copiar a: $backupPath');
 
@@ -165,7 +167,8 @@ class ConfigurationScreen extends StatelessWidget {
           if (!context.mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Por favor selecciona un archivo de base de datos (.db)'),
+              content: Text(
+                  'Por favor selecciona un archivo de base de datos (.db)'),
               backgroundColor: Colors.red,
             ),
           );
@@ -289,7 +292,8 @@ class ConfigurationScreen extends StatelessWidget {
               builder: (context, themeProvider, child) {
                 return SwitchListTile(
                   title: const Text('Tema Oscuro'),
-                  subtitle: Text(themeProvider.isDarkMode ? 'Activado' : 'Desactivado'),
+                  subtitle: Text(
+                      themeProvider.isDarkMode ? 'Activado' : 'Desactivado'),
                   value: themeProvider.isDarkMode,
                   onChanged: (bool value) {
                     themeProvider.toggleTheme();
@@ -317,19 +321,22 @@ class ConfigurationScreen extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.backup),
                   title: const Text('Crear Copia de Seguridad'),
-                  subtitle: const Text('Crear una copia de seguridad de la base de datos'),
+                  subtitle: const Text(
+                      'Crear una copia de seguridad de la base de datos'),
                   onTap: () => _exportDatabase(context),
                 ),
                 ListTile(
                   leading: const Icon(Icons.restore),
                   title: const Text('Restaurar desde Copia de Seguridad'),
-                  subtitle: const Text('Restaurar la base de datos desde una copia de seguridad'),
+                  subtitle: const Text(
+                      'Restaurar la base de datos desde una copia de seguridad'),
                   onTap: () => _importDatabase(context),
                 ),
                 ListTile(
                   leading: const Icon(Icons.delete_forever),
                   title: const Text('Eliminar Todos los Datos'),
-                  subtitle: const Text('Eliminar todos los datos de la base de datos'),
+                  subtitle: const Text(
+                      'Eliminar todos los datos de la base de datos'),
                   onTap: () => _showResetConfirmationDialog(context),
                 ),
               ],

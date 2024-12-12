@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:baseballanotation/models/player.dart';
-import 'package:baseballanotation/models/event.dart';
-import 'package:baseballanotation/models/team.dart';
-import 'package:baseballanotation/models/my_team.dart';
-import 'package:baseballanotation/models/game.dart';
+import 'package:baseballScore/models/player.dart';
+import 'package:baseballScore/models/event.dart';
+import 'package:baseballScore/models/team.dart';
+import 'package:baseballScore/models/my_team.dart';
+import 'package:baseballScore/models/game.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -82,7 +82,7 @@ class DatabaseServices {
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         print('Upgrading database from version $oldVersion to $newVersion');
-        
+
         // Migración para agregar las nuevas columnas
         if (oldVersion < 6) {
           await db.execute('''
@@ -127,7 +127,7 @@ class DatabaseServices {
             print('Babip column might already exist: $e');
           }
         }
-        
+
         await _createTables(db); // Aseguramos que todas las tablas existan
       },
     );
@@ -273,7 +273,8 @@ class DatabaseServices {
 
   Future<List<Player>> getPlayersByHomeRuns() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnHomeRuns DESC');
+    final List<Map<String, dynamic>> maps =
+        await db.query(tableName, orderBy: '$columnHomeRuns DESC');
     return List.generate(maps.length, (i) {
       return Player.fromMap(maps[i]);
     });
@@ -281,7 +282,8 @@ class DatabaseServices {
 
   Future<List<Player>> getPlayersByAtBats() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnAtBats DESC');
+    final List<Map<String, dynamic>> maps =
+        await db.query(tableName, orderBy: '$columnAtBats DESC');
     return List.generate(maps.length, (i) {
       return Player.fromMap(maps[i]);
     });
@@ -289,7 +291,8 @@ class DatabaseServices {
 
   Future<List<Player>> getPlayersByHits() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnHits DESC');
+    final List<Map<String, dynamic>> maps =
+        await db.query(tableName, orderBy: '$columnHits DESC');
     return List.generate(maps.length, (i) {
       return Player.fromMap(maps[i]);
     });
@@ -297,7 +300,8 @@ class DatabaseServices {
 
   Future<List<Player>> getPlayersByRbi() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(tableName, orderBy: '$columnRbi DESC');
+    final List<Map<String, dynamic>> maps =
+        await db.query(tableName, orderBy: '$columnRbi DESC');
     return List.generate(maps.length, (i) {
       return Player.fromMap(maps[i]);
     });
@@ -405,7 +409,7 @@ class DatabaseServices {
   Future<bool> deleteEvent(int id) async {
     try {
       final db = await database;
-      
+
       print('🔍 INICIO Proceso de eliminación de evento en base de datos');
       print('🔑 ID del evento a borrar: $id');
 

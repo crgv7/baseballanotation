@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:baseballanotation/models/event.dart';
-import 'package:baseballanotation/services/database_services.dart';
+import 'package:baseballScore/models/event.dart';
+import 'package:baseballScore/services/database_services.dart';
 
 part 'color-picker.dart';
 
@@ -103,15 +103,17 @@ class EventCalendarState extends State<EventCalendar> {
   Future<void> _loadEvents() async {
     final events = await databaseServices.getEvents();
     setState(() {
-      appointments = events.map((event) => Meeting(
-        eventName: event.eventName,
-        from: event.from,
-        to: event.to,
-        background: _colorCollection[event.colorIndex],
-        isAllDay: event.isAllDay,
-        id: event.id,
-        notes: event.notes ?? '',
-      )).toList();
+      appointments = events
+          .map((event) => Meeting(
+                eventName: event.eventName,
+                from: event.from,
+                to: event.to,
+                background: _colorCollection[event.colorIndex],
+                isAllDay: event.isAllDay,
+                id: event.id,
+                notes: event.notes ?? '',
+              ))
+          .toList();
       _events = DataSource(appointments);
     });
   }
@@ -160,7 +162,7 @@ class EventCalendarState extends State<EventCalendar> {
     try {
       print('🔍 INICIO Proceso de eliminación de evento');
       print('🔑 ID del evento: ${meeting.id}');
-      
+
       if (meeting.id == null) {
         print('❌ ERROR: El ID del evento es NULL');
         if (mounted) {
@@ -188,7 +190,7 @@ class EventCalendarState extends State<EventCalendar> {
 
       // Intentar borrar el evento
       final bool success = await databaseServices.deleteEvent(meeting.id!);
-      
+
       print('✅ Resultado de borrado en base de datos: $success');
 
       if (success) {
@@ -242,26 +244,28 @@ class EventCalendarState extends State<EventCalendar> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        ),
         resizeToAvoidBottomInset: false,
         body: Padding(
             padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
             child: getEventCalendar(_events, onCalendarTapped)));
   }
 
-  SfCalendar getEventCalendar(
-      CalendarDataSource _calendarDataSource,
+  SfCalendar getEventCalendar(CalendarDataSource _calendarDataSource,
       CalendarTapCallback calendarTapCallback) {
     return SfCalendar(
         view: CalendarView.month,
         controller: calendarController,
-        allowedViews: const [CalendarView.week, CalendarView.timelineWeek, CalendarView.month],
+        allowedViews: const [
+          CalendarView.week,
+          CalendarView.timelineWeek,
+          CalendarView.month
+        ],
         dataSource: _calendarDataSource,
         onTap: calendarTapCallback,
         appointmentBuilder: (context, calendarAppointmentDetails) {
-          final Meeting meeting =
-              calendarAppointmentDetails.appointments.first;
+          final Meeting meeting = calendarAppointmentDetails.appointments.first;
           return Container(
             color: meeting.background.withOpacity(0.8),
             child: Text(meeting.eventName),

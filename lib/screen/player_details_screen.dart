@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:baseballanotation/models/player.dart';
+import 'package:baseballScore/models/player.dart';
 
 class PlayerDetailsScreen extends StatelessWidget {
   final Player player;
@@ -38,15 +38,19 @@ class PlayerDetailsScreen extends StatelessWidget {
   }
 
   double? _calculateBABIP() {
-    if (player.hits == null || player.homeRuns == null || 
-        player.atBats == null || player.strikeouts == null || 
+    if (player.hits == null ||
+        player.homeRuns == null ||
+        player.atBats == null ||
+        player.strikeouts == null ||
         player.sf == null) {
       return null;
     }
 
     final numerator = (player.hits! - player.homeRuns!).toDouble();
-    final denominator = (player.atBats! - player.strikeouts! - player.homeRuns! + player.sf!).toDouble();
-    
+    final denominator =
+        (player.atBats! - player.strikeouts! - player.homeRuns! + player.sf!)
+            .toDouble();
+
     if (denominator == 0) {
       return null;
     }
@@ -82,76 +86,82 @@ class PlayerDetailsScreen extends StatelessWidget {
                       ),
                       const Divider(),
                       _buildStatRow('Nombre', player.name),
-                      _buildStatRow('Posición', player.isPitcher ? 'Lanzador' : 'Bateador'),
+                      _buildStatRow('Posición',
+                          player.isPitcher ? 'Lanzador' : 'Bateador'),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              if (!player.isPitcher) Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Estadísticas de Bateo',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+              if (!player.isPitcher)
+                Card(
+                  elevation: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Estadísticas de Bateo',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const Divider(),
-                      _buildStatRow('Average', player.average),
-                      _buildStatRow('Hits', player.hits),
-                      _buildStatRow('Turnos al Bate', player.atBats),
-                      _buildStatRow('Dobles (2B)', player.doubles),
-                      _buildStatRow('Triples (3B)', player.triples),
-                      _buildStatRow('Jonrones', player.homeRuns),
-                      _buildStatRow('Slugging', player.slg),
-                      _buildStatRow('BABIP', _calculateBABIP()),
-                      _buildStatRow('Carreras Impulsadas', player.rbi),
-                      _buildStatRow('Carreras Anotadas', player.runs),
-                      _buildStatRow('Bases Robadas', player.stolenBases),
-                      _buildStatRow('Golpeado por Lanzamiento', player.hbp),
-                      _buildStatRow('Elevado de Sacrificio', player.sf),
-                      _buildStatRow('Base por Bolas', player.bb),
-                      _buildStatRow('OBP', player.obp),
-                      _buildStatRow('BB%', player.bbPercentage != null 
-                          ? '${player.bbPercentage!.toStringAsFixed(1)}%' 
-                          : '-'),
-                    ],
+                        const Divider(),
+                        _buildStatRow('Average', player.average),
+                        _buildStatRow('Hits', player.hits),
+                        _buildStatRow('Turnos al Bate', player.atBats),
+                        _buildStatRow('Dobles (2B)', player.doubles),
+                        _buildStatRow('Triples (3B)', player.triples),
+                        _buildStatRow('Jonrones', player.homeRuns),
+                        _buildStatRow('Slugging', player.slg),
+                        _buildStatRow('BABIP', _calculateBABIP()),
+                        _buildStatRow('Carreras Impulsadas', player.rbi),
+                        _buildStatRow('Carreras Anotadas', player.runs),
+                        _buildStatRow('Bases Robadas', player.stolenBases),
+                        _buildStatRow('Golpeado por Lanzamiento', player.hbp),
+                        _buildStatRow('Elevado de Sacrificio', player.sf),
+                        _buildStatRow('Base por Bolas', player.bb),
+                        _buildStatRow('OBP', player.obp),
+                        _buildStatRow(
+                            'BB%',
+                            player.bbPercentage != null
+                                ? '${player.bbPercentage!.toStringAsFixed(1)}%'
+                                : '-'),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              if (player.isPitcher) Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Estadísticas de Pitcheo',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+              if (player.isPitcher)
+                Card(
+                  elevation: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Estadísticas de Pitcheo',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const Divider(),
-                      _buildStatRow('Victorias', player.wins),
-                      _buildStatRow('Derrotas', player.losses),
-                      _buildStatRow('ERA', player.era),
-                      _buildStatRow('Ponches', player.strikeouts),
-                      _buildStatRow('Bases por Bolas', player.walks),
-                      _buildStatRow('WHIP', player.whip),
-                      _buildStatRow('Innings Lanzados', player.inningsPitched),
-                      _buildStatRow('Salvados', player.saves),
-                    ],
+                        const Divider(),
+                        _buildStatRow('Victorias', player.wins),
+                        _buildStatRow('Derrotas', player.losses),
+                        _buildStatRow('ERA', player.era),
+                        _buildStatRow('Ponches', player.strikeouts),
+                        _buildStatRow('Bases por Bolas', player.walks),
+                        _buildStatRow('WHIP', player.whip),
+                        _buildStatRow(
+                            'Innings Lanzados', player.inningsPitched),
+                        _buildStatRow('Salvados', player.saves),
+                      ],
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

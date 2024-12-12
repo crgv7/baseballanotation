@@ -1,7 +1,7 @@
-import 'package:baseballanotation/models/player.dart';
-import 'package:baseballanotation/services/database_services.dart';
+import 'package:baseballScore/models/player.dart';
+import 'package:baseballScore/services/database_services.dart';
 import 'package:flutter/material.dart';
-import 'package:baseballanotation/screen/player_details_screen.dart';
+import 'package:baseballScore/screen/player_details_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -36,7 +36,8 @@ class _HomeState extends State<Home> {
   final TextEditingController _winsController = TextEditingController();
   final TextEditingController _lossesController = TextEditingController();
   final TextEditingController _eraController = TextEditingController();
-  final TextEditingController _strikeoutsPitchingController = TextEditingController();
+  final TextEditingController _strikeoutsPitchingController =
+      TextEditingController();
   final TextEditingController _walksController = TextEditingController();
   final TextEditingController _inningsPitchedController =
       TextEditingController();

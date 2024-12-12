@@ -37,9 +37,10 @@ class AboutScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  _buildInfoRow(Icons.tag, 'Versión', '1.0 BETA'),
+                  _buildInfoRow(Icons.tag, 'Versión', '2.0 BETA'),
                   const Divider(),
-                  _buildInfoRow(Icons.person, 'Creador', 'Carlos Garcia Vargas'),
+                  _buildInfoRow(
+                      Icons.person, 'Creador', 'Carlos Garcia Vargas'),
                   const Divider(),
                   _buildInfoRow(Icons.email, 'Correo', 'crgvargass@gmail.com'),
                   const Divider(),
@@ -95,10 +96,16 @@ class AboutScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.3),
                       ),
                     ),
                     child: Row(
@@ -138,7 +145,8 @@ class AboutScreen extends StatelessWidget {
                             )).then((_) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Número de tarjeta copiado al portapapeles'),
+                                  content: Text(
+                                      'Número de tarjeta copiado al portapapeles'),
                                   duration: Duration(seconds: 2),
                                 ),
                               );

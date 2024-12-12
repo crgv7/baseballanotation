@@ -1,5 +1,5 @@
-import 'package:baseballanotation/models/player.dart';
-import 'package:baseballanotation/services/database_services.dart';
+import 'package:baseballScore/models/player.dart';
+import 'package:baseballScore/services/database_services.dart';
 import 'package:flutter/material.dart';
 
 class Lideres extends StatefulWidget {
@@ -251,15 +251,18 @@ class _LideresState extends State<Lideres> {
               // diálogo de selección de estadísticas
               switch (_selectedOption) {
                 case "Home Runs":
-                  statValue = "${player.homeRuns ?? 0}"; // Mostrar el número de Home Runs
+                  statValue =
+                      "${player.homeRuns ?? 0}"; // Mostrar el número de Home Runs
                   statLabel = "HR"; // La etiqueta es "HR"
                   break;
                 case "Hits":
-                  statValue = "${player.hits ?? 0}"; // Mostrar el número de Hits
+                  statValue =
+                      "${player.hits ?? 0}"; // Mostrar el número de Hits
                   statLabel = "H"; // La etiqueta es "H"
                   break;
                 case "At Bats":
-                  statValue = "${player.atBats ?? 0}"; // Mostrar el número de At Bats
+                  statValue =
+                      "${player.atBats ?? 0}"; // Mostrar el número de At Bats
                   statLabel = "AB"; // La etiqueta es "AB"
                   break;
                 case "RBI":
@@ -267,35 +270,43 @@ class _LideresState extends State<Lideres> {
                   statLabel = "RBI"; // La etiqueta es "RBI"
                   break;
                 case "Wins":
-                  statValue = "${player.wins ?? 0}"; // Mostrar el número de Wins
+                  statValue =
+                      "${player.wins ?? 0}"; // Mostrar el número de Wins
                   statLabel = "W"; // La etiqueta es "W"
                   break;
                 case "Losses":
-                  statValue = "${player.losses ?? 0}"; // Mostrar el número de Losses
+                  statValue =
+                      "${player.losses ?? 0}"; // Mostrar el número de Losses
                   statLabel = "L"; // La etiqueta es "L"
                   break;
                 case "ERA":
-                  statValue = "${player.era?.toStringAsFixed(2) ?? "0.00"}"; // Mostrar el ERA con 2 decimales
+                  statValue =
+                      "${player.era?.toStringAsFixed(2) ?? "0.00"}"; // Mostrar el ERA con 2 decimales
                   statLabel = "ERA"; // La etiqueta es "ERA"
                   break;
                 case "Strikeouts":
-                  statValue = "${player.strikeouts ?? 0}"; // Mostrar el número de Strikeouts
+                  statValue =
+                      "${player.strikeouts ?? 0}"; // Mostrar el número de Strikeouts
                   statLabel = "K"; // La etiqueta es "K"
                   break;
                 case "Walks":
-                  statValue = "${player.walks ?? 0}"; // Mostrar el número de Walks
+                  statValue =
+                      "${player.walks ?? 0}"; // Mostrar el número de Walks
                   statLabel = "BB"; // La etiqueta es "BB"
                   break;
                 case "InningsPitched":
-                  statValue = "${player.inningsPitched ?? 0}"; // Mostrar el número de Innings Pitched
+                  statValue =
+                      "${player.inningsPitched ?? 0}"; // Mostrar el número de Innings Pitched
                   statLabel = "IP"; // La etiqueta es "IP"
                   break;
                 case "Saves":
-                  statValue = "${player.saves ?? 0}"; // Mostrar el número de Saves
+                  statValue =
+                      "${player.saves ?? 0}"; // Mostrar el número de Saves
                   statLabel = "SV"; // La etiqueta es "SV"
                   break;
                 default:
-                  statValue = "${player.homeRuns ?? 0}"; // Por defecto, mostrar el número de Home Runs
+                  statValue =
+                      "${player.homeRuns ?? 0}"; // Por defecto, mostrar el número de Home Runs
                   statLabel = "HR"; // La etiqueta es "HR"
               }
 
