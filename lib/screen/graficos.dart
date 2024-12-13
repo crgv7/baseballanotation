@@ -3,11 +3,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../models/player.dart';
 import '../services/database_services.dart';
 
-enum ChartType {
-  column,
-  pie,
-  line
-}
+enum ChartType { column, pie, line }
 
 class Graficos extends StatefulWidget {
   const Graficos({super.key});
@@ -37,7 +33,8 @@ class _GraficosState extends State<Graficos> {
           title: const Text('Estadísticas'),
           bottom: const TabBar(
             labelColor: Colors.white, // Color del texto seleccionado
-            unselectedLabelColor: Colors.white70, // Color del texto no seleccionado
+            unselectedLabelColor:
+                Colors.white70, // Color del texto no seleccionado
             tabs: [
               Tab(text: 'Bateadores'),
               Tab(text: 'Pitchers'),
@@ -117,8 +114,9 @@ class _GraficosState extends State<Graficos> {
           return const Center(child: Text('No hay datos disponibles'));
         }
 
-        final batters = snapshot.data!.where((player) => !player.isPitcher).toList();
-        
+        final batters =
+            snapshot.data!.where((player) => !player.isPitcher).toList();
+
         return SingleChildScrollView(
           child: Column(
             children: [
@@ -188,8 +186,9 @@ class _GraficosState extends State<Graficos> {
           return const Center(child: Text('No hay datos disponibles'));
         }
 
-        final pitchers = snapshot.data!.where((player) => player.isPitcher).toList();
-        
+        final pitchers =
+            snapshot.data!.where((player) => player.isPitcher).toList();
+
         return SingleChildScrollView(
           child: Column(
             children: [
@@ -224,7 +223,9 @@ class _GraficosState extends State<Graficos> {
     );
   }
 
-  Widget _buildChart(String title, List<Player> players, double Function(Player) getValue, String Function(double) formatValue) {
+  Widget _buildChart(String title, List<Player> players,
+      double Function(Player) getValue, String Function(double) formatValue) {
+    print("value : ${getValue(players[0])}");
     switch (_currentChartType) {
       case ChartType.column:
         return Container(

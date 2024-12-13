@@ -117,6 +117,22 @@ class _HomeState extends State<Home> {
     return null;
   }
 
+  double? _calculateBABIP() {
+    final hits = int.tryParse(_hitsController.text);
+    final homeRuns = int.tryParse(_homeRunsController.text);
+    final atBats = int.tryParse(_atBatsController.text);
+    final strikeouts = int.tryParse(_strikeoutsController.text);
+    final sf = int.tryParse(_sfController.text);
+    if (hits != null &&
+        homeRuns != null &&
+        atBats != null &&
+        strikeouts != null &&
+        sf != null) {
+      return (hits - homeRuns) / (atBats - strikeouts - homeRuns + sf);
+    }
+    return null;
+  }
+
   double? _calculateObp() {
     final hits = int.tryParse(_hitsController.text);
     final bb = int.tryParse(_bbController.text);
@@ -174,6 +190,24 @@ class _HomeState extends State<Home> {
     final innings = int.tryParse(_inningsPitchedController.text);
     if (walks != null && hits != null && innings != null && innings > 0) {
       return (walks + (hits)) / innings;
+    }
+    return null;
+  }
+
+  double? _calculateKPercentage() {
+    final strikeouts = int.tryParse(_strikeoutsController.text);
+    final atBats = int.tryParse(_atBatsController.text);
+    final bb = int.tryParse(_bbController.text);
+    final hbp = int.tryParse(_hbpController.text);
+
+    // Calcular Plate Appearances (PA)
+    if (strikeouts != null && atBats != null && bb != null && hbp != null) {
+      final plateAppearances = atBats + bb + hbp;
+
+      // Evitar división por cero
+      if (plateAppearances > 0) {
+        return (strikeouts / plateAppearances) * 100;
+      }
     }
     return null;
   }
@@ -380,6 +414,8 @@ class _HomeState extends State<Home> {
                         obp: _calculateObp(),
                         bbPercentage: _calculateBbPercentage(),
                         slg: _calculateSlg(),
+                        babip: _calculateBABIP(),
+                        kPercentage: _calculateKPercentage(),
                         // Pitching stats
                         wins: int.tryParse(_winsController.text),
                         losses: int.tryParse(_lossesController.text),
@@ -569,6 +605,8 @@ class _HomeState extends State<Home> {
                   obp: _calculateObp(),
                   bbPercentage: _calculateBbPercentage(),
                   slg: _calculateSlg(),
+                  babip: _calculateBABIP(),
+                  kPercentage: _calculateKPercentage(),
                   // Pitching stats
                   wins: int.tryParse(_winsController.text),
                   losses: int.tryParse(_lossesController.text),

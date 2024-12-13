@@ -2,25 +2,26 @@ class Player {
   final int? id;
   final String name;
   final bool isPitcher;
-  
+
   // Batting stats
   final int? hits;
   final int? atBats;
   final double? average;
   final int? homeRuns;
-  final int? doubles;  // New field for 2B
-  final int? triples;  // New field for 3B
+  final int? doubles; // New field for 2B
+  final int? triples; // New field for 3B
   final int? rbi;
   final int? runs;
   final int? stolenBases;
-  final int? hbp;  // Hit By Pitch
-  final int? sf;   // Sacrifice Fly
-  final int? bb;   // Base on Balls (Walks)
+  final int? hbp; // Hit By Pitch
+  final int? sf; // Sacrifice Fly
+  final int? bb; // Base on Balls (Walks)
   final double? obp; // On-base percentage
   final double? bbPercentage; // Base on balls percentage
   final double? slg; // Slugging percentage
   final double? babip; // Batting Average on Balls in Play
-  
+  final double? kPercentage;
+
   // Pitching stats
   final int? wins;
   final int? losses;
@@ -39,8 +40,8 @@ class Player {
     this.atBats,
     this.average,
     this.homeRuns,
-    this.doubles,  // New field
-    this.triples,  // New field
+    this.doubles, // New field
+    this.triples, // New field
     this.rbi,
     this.runs,
     this.stolenBases,
@@ -51,6 +52,7 @@ class Player {
     this.bbPercentage,
     this.slg,
     this.babip,
+    this.kPercentage,
     this.wins,
     this.losses,
     this.era,
@@ -70,8 +72,8 @@ class Player {
       atBats: map['at_bats'] as int?,
       average: map['average'] as double?,
       homeRuns: map['home_runs'] as int?,
-      doubles: map['doubles'] as int?,  // New field
-      triples: map['triples'] as int?,  // New field
+      doubles: map['doubles'] as int?, // New field
+      triples: map['triples'] as int?, // New field
       rbi: map['rbi'] as int?,
       runs: map['runs'] as int?,
       stolenBases: map['stolen_bases'] as int?,
@@ -82,6 +84,7 @@ class Player {
       bbPercentage: map['bb_percentage'] as double?,
       slg: map['slg'] as double?,
       babip: map['babip'] as double?,
+      kPercentage: map['k_percentage'] as double?,
       wins: map['wins'] as int?,
       losses: map['losses'] as int?,
       era: map['era'] as double?,
@@ -102,8 +105,8 @@ class Player {
       'at_bats': atBats,
       'average': average,
       'home_runs': homeRuns,
-      'doubles': doubles,  // New field
-      'triples': triples,  // New field
+      'doubles': doubles, // New field
+      'triples': triples, // New field
       'rbi': rbi,
       'runs': runs,
       'stolen_bases': stolenBases,
@@ -114,6 +117,7 @@ class Player {
       'bb_percentage': bbPercentage,
       'slg': slg,
       'babip': babip,
+      'k_percentage': kPercentage,
       'wins': wins,
       'losses': losses,
       'era': era,
@@ -133,8 +137,8 @@ class Player {
     int? atBats,
     double? average,
     int? homeRuns,
-    int? doubles,  // New field
-    int? triples,  // New field
+    int? doubles, // New field
+    int? triples, // New field
     int? rbi,
     int? runs,
     int? stolenBases,
@@ -145,6 +149,7 @@ class Player {
     double? bbPercentage,
     double? slg,
     double? babip,
+    double? kPercentage,
     int? wins,
     int? losses,
     double? era,
@@ -162,8 +167,8 @@ class Player {
       atBats: atBats ?? this.atBats,
       average: average ?? this.average,
       homeRuns: homeRuns ?? this.homeRuns,
-      doubles: doubles ?? this.doubles,  // New field
-      triples: triples ?? this.triples,  // New field
+      doubles: doubles ?? this.doubles, // New field
+      triples: triples ?? this.triples, // New field
       rbi: rbi ?? this.rbi,
       runs: runs ?? this.runs,
       stolenBases: stolenBases ?? this.stolenBases,
@@ -174,6 +179,7 @@ class Player {
       bbPercentage: bbPercentage ?? this.bbPercentage,
       slg: slg ?? this.slg,
       babip: babip ?? this.babip,
+      kPercentage: kPercentage ?? this.kPercentage,
       wins: wins ?? this.wins,
       losses: losses ?? this.losses,
       era: era ?? this.era,

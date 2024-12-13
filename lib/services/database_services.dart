@@ -35,6 +35,8 @@ class DatabaseServices {
   final String columnObp = 'obp';
   final String columnBbPercentage = 'bb_percentage';
   final String columnSlg = 'slg';
+  final String columnKPercentage = 'k_percentage';
+  final String columnBabip = 'babip';
   final String columnWins = 'wins';
   final String columnLosses = 'losses';
   final String columnEra = 'era';
@@ -128,6 +130,13 @@ class DatabaseServices {
           }
         }
 
+        if (oldVersion < 11) {
+          await db.execute('''
+            ALTER TABLE $tableName ADD COLUMN $columnKPercentage REAL;
+            
+          ''');
+        }
+
         await _createTables(db); // Aseguramos que todas las tablas existan
       },
     );
@@ -157,7 +166,8 @@ class DatabaseServices {
             $columnObp REAL,
             $columnBbPercentage REAL,
             $columnSlg REAL,
-            babip REAL,
+            $columnKPercentage REAL,
+            $columnBabip REAL,
             $columnWins INTEGER,
             $columnLosses INTEGER,
             $columnEra REAL,
